@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:658104774918:android:52687af089132655c2ae87",
+        "android_client_info": {
+          "package_name": "com.example.my_recipe_box"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSxiAhXdJqdlpGv5jk3RkEVavptPe5DW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:658104774918:android:707c3b75705441f9c2ae87",
         "android_client_info": {
           "package_name": "com.kaleb.flutterrecipeapp"
