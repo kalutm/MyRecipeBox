@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+class EmailVerificationView extends StatelessWidget {
+  const EmailVerificationView({super.key});
 
   @override
   Widget build(BuildContext context) {
