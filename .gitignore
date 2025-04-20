@@ -31,11 +31,12 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+/build/          # ✅ already here
+*.apk            # ✅ added - ignore generated Android APKs
+*.ipa            # ✅ added - ignore generated iOS archives
 
-#fire base related
+# Firebase related
 lib/firebase_options.dart
-
 
 # Symbolication related
 app.*.symbols
