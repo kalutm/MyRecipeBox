@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:my_recipe_box/exceptions/auth_exceptions.dart';
+import 'package:my_recipe_box/exceptions/auth/auth_exceptions.dart';
 import 'package:my_recipe_box/services/auth/auth_service.dart';
 import 'package:my_recipe_box/utils/constants/colors.dart';
 import 'package:my_recipe_box/utils/constants/hint_texts.dart';
 import 'package:my_recipe_box/utils/constants/route_constants.dart';
 import 'package:my_recipe_box/utils/dialogs/error_dialog.dart';
-import 'package:my_recipe_box/widgets/text_widgets.dart';
+import 'package:my_recipe_box/widgets/text_widgets/views_text_widgets.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -121,7 +121,7 @@ class _LoginViewState extends State<LoginView> {
             onPressed: () {
               Navigator.of(context).pushReplacementNamed(registerViewRoute);
             },
-            child: const Text("Dont have an account? click here to register."),
+            child: toRegisterTextWidget,
           ),
         ],
       ),

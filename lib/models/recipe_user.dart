@@ -1,17 +1,17 @@
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
 
-class User {
+class RecipeUser {
   final String id;
   final String email;
 
-  User({
+  RecipeUser({
     required this.id,
     required this.email
     });
 
-  User.fromDbr(Map<String, Object?> dbRow):
-  id = dbRow[userIdCoulmn] as String,
-  email = dbRow[emailCoulmn] as String;
+  RecipeUser.fromRowMap(Map<String, Object?> dbRowMap):
+  id = dbRowMap[userIdCoulmn] as String,
+  email = dbRowMap[emailCoulmn] as String;
 
   Map<String, Object?> toMap(){
     return {
@@ -24,7 +24,7 @@ class User {
   String toString() => "id: $id, email: $email";
 
   @override
-  bool operator ==(covariant User other) => id == other.id;
+  bool operator ==(covariant RecipeUser other) => id == other.id;
 
   @override
   int get hashCode => id.hashCode;

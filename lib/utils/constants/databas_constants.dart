@@ -1,3 +1,6 @@
+// data base constants 
+const dbName = "recipes.db";
+
 // recipe table constants
 
 const recipeIdCoulmn = "id";

@@ -23,22 +23,22 @@ class Recipe {
     this.isFavorite = false,
   });
 
-  Recipe.fromMap(Map<String, Object?> dbRow)
-    : id = dbRow[recipeIdCoulmn] as String,
-      userId = dbRow[userIdCoulmn] as String,
-      title = dbRow[titleCoulmn] as String,
+  Recipe.fromRowMap(Map<String, Object?> dbRowMap)
+    : id = dbRowMap[recipeIdCoulmn] as String,
+      userId = dbRowMap[userIdCoulmn] as String,
+      title = dbRowMap[titleCoulmn] as String,
       ingredients = List<String>.from(
-  jsonDecode(dbRow[ingredientsCoulmn] as String)
+  jsonDecode(dbRowMap[ingredientsCoulmn] as String)
 ),
       steps = List<String>.from(
-        jsonDecode(dbRow[stepsCoulmn] as String)
+        jsonDecode(dbRowMap[stepsCoulmn] as String)
       ),
-      category = dbRow[categoryCoulmn] = dbRow[photoPathCoulmn] == null ? null: dbRow[photoPathCoulmn] as String,
+      category = dbRowMap[categoryCoulmn] = dbRowMap[photoPathCoulmn] == null ? null: dbRowMap[photoPathCoulmn] as String,
       photoPath =
-          dbRow[photoPathCoulmn] == null
+          dbRowMap[photoPathCoulmn] == null
               ? null
-              : dbRow[photoPathCoulmn] as String,
-      isFavorite = dbRow[isFavoritecoulmn] == 1;
+              : dbRowMap[photoPathCoulmn] as String,
+      isFavorite = dbRowMap[isFavoritecoulmn] == 1;
 
   Map<String, Object?> toMap(){
     return {

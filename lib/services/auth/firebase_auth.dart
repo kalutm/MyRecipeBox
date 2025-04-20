@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:my_recipe_box/exceptions/auth_exceptions.dart';
+import 'package:my_recipe_box/exceptions/auth/auth_exceptions.dart';
 import 'package:my_recipe_box/firebase_options.dart';
 import 'package:my_recipe_box/services/auth/auth_interface.dart';
 import 'package:my_recipe_box/services/auth/auth_user.dart';
@@ -181,7 +181,10 @@ class FireAuth implements AuthInterface{
     });
 
     return await completer.future;
-  }  catch (e) {
+  }  catch (authError) {
+    if(authError is TimeoutException){
+      throw EmailVerificationCheckTimeoutException();
+    }
     throw EmailVerificationCheckAuthException();
   }
   }

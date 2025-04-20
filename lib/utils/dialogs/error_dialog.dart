@@ -28,3 +28,6 @@ const networkErrorMessage = "Network error! please connect to the internet";
 // register error messages
 const weakPasswordErrorMessage = "Weak password! Your password must atleast be 6 charachters long and must have a letter and a number";
 const emailAlreadyInUSeErrorMessage = "Email taken! This email is already in use";
+
+// email verification error messages
+const verificationTimedOutErrorMessage = "Verification has timed out please click the resend button";

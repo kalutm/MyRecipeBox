@@ -25,3 +25,4 @@ class VerificationSendingAuthException implements AuthException{}
 
 // email verification check authexceptions
 class EmailVerificationCheckAuthException implements AuthException{}
+class EmailVerificationCheckTimeoutException implements AuthException{}

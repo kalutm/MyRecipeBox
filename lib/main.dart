@@ -22,6 +22,7 @@ class MyRecipeBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
     initialRoute: authWrapperRoute,
     routes: {
       authWrapperRoute: (context) => AuthWrapper(),
