@@ -31,20 +31,21 @@ dependencies:
   flutter:
     sdk: flutter
     # Firebase Core & Auth
-  firebase_core: ^2.27.0
-  firebase_auth: ^4.17.0
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.2
 
   # SQLite for local storage
-  sqflite: ^2.3.2
-  path: ^1.9.0
+  sqflite: ^2.4.2
+  path: ^1.9.1
+  path_provider: ^2.1.5
 
   # Timers
-  flutter_ringtone_player: ^3.2.0  # Optional alarm-style timer sound
-  flutter_local_notifications: ^17.0.0  # For background timer notifications
+  #flutter_ringtone_player: ^3.2.0  # Optional alarm-style timer sound
+  #flutter_local_notifications: ^17.0.0  # For background timer notifications
 
   # QR Code Generation & Scanning
   qr_flutter: ^4.1.0
-  qr_code_scanner: ^1.0.1
+  #qr_code_scanner: ^1.0.1
 
   # UI & Styling
   flutter_slidable: ^3.0.0
@@ -56,7 +57,6 @@ dependencies:
 
   # Image Picker (Optional for recipe images)
   image_picker: ^1.0.7
-  path_provider: ^2.1.2
 
   # waiting display
   flutter_spinkit: ^5.2.1
