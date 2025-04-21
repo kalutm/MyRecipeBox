@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
 
 class Recipe {
-  final String id;
-  final String userId;
+  final int? id;
+  final int userId;
   final String title;
   final List<String> ingredients;
   final List<String> steps;
@@ -13,36 +12,40 @@ class Recipe {
   final bool isFavorite;
 
   Recipe({
-    required this.id,
+    this.id,
     required this.userId,
-    required this.title,
-    required this.ingredients,
-    required this.steps,
+    this.title = 'omlete',
+    this.ingredients = const ["egg", "oil"],
+    this.steps = const [
+      "first heat the pan with the oil",
+      "then cook the egg in the pan",
+    ],
     this.category,
     this.photoPath,
     this.isFavorite = false,
   });
 
   Recipe.fromRowMap(Map<String, Object?> dbRowMap)
-    : id = dbRowMap[recipeIdCoulmn] as String,
-      userId = dbRowMap[userIdCoulmn] as String,
+    : id = dbRowMap[recipeIdCoulmn] as int,
+      userId = dbRowMap[userIdCoulmn] as int,
       title = dbRowMap[titleCoulmn] as String,
       ingredients = List<String>.from(
-  jsonDecode(dbRowMap[ingredientsCoulmn] as String)
-),
-      steps = List<String>.from(
-        jsonDecode(dbRowMap[stepsCoulmn] as String)
+        jsonDecode(dbRowMap[ingredientsCoulmn] as String),
       ),
-      category = dbRowMap[categoryCoulmn] = dbRowMap[photoPathCoulmn] == null ? null: dbRowMap[photoPathCoulmn] as String,
+      steps = List<String>.from(jsonDecode(dbRowMap[stepsCoulmn] as String)),
+      category =
+          dbRowMap[categoryCoulmn] =
+              dbRowMap[photoPathCoulmn] == null
+                  ? null
+                  : dbRowMap[photoPathCoulmn] as String,
       photoPath =
           dbRowMap[photoPathCoulmn] == null
               ? null
               : dbRowMap[photoPathCoulmn] as String,
       isFavorite = dbRowMap[isFavoritecoulmn] == 1;
 
-  Map<String, Object?> toMap(){
+  Map<String, Object?> toMap() {
     return {
-      recipeIdCoulmn: id,
       userIdCoulmn: userId,
       titleCoulmn: title,
       ingredientsCoulmn: jsonEncode(ingredients),
@@ -50,7 +53,6 @@ class Recipe {
       categoryCoulmn: category,
       photoPathCoulmn: photoPath,
       isFavoritecoulmn: isFavorite ? 1 : 0,
-
     };
   }
 

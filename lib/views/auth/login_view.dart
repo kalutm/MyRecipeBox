@@ -54,16 +54,13 @@ class _LoginViewState extends State<LoginView> {
                   _emailController.text,
                   _passwordController.text,
                 );
-                if(context.mounted && currentUser.isEmailVerified){
-                  Navigator.of(context).pushReplacementNamed(
-                    recipeViewRoute,
-                    );
-                }
-                else{
-                  if(context.mounted){
-                    Navigator.of(context).pushReplacementNamed(
-                    emailVerificationRoute,
-                    );
+                if (context.mounted && currentUser.isEmailVerified) {
+                  Navigator.of(context).pushReplacementNamed(recipeViewRoute);
+                } else {
+                  if (context.mounted) {
+                    Navigator.of(
+                      context,
+                    ).pushReplacementNamed(emailVerificationRoute);
                   }
                 }
               } on AuthException catch (authError) {
@@ -81,16 +78,14 @@ class _LoginViewState extends State<LoginView> {
                       errorMessage: userNotFoundErrorMessage,
                     );
                   }
-                }
-                else if (authError is WrongPasswordAuthException) {
+                } else if (authError is WrongPasswordAuthException) {
                   if (context.mounted) {
                     await showErrorDialog(
                       context: context,
                       errorMessage: wrongPasswordErrorMessage,
                     );
                   }
-                }
-                else if (authError is NetworkErrorAuthException) {
+                } else if (authError is NetworkErrorAuthException) {
                   if (context.mounted) {
                     await showErrorDialog(
                       context: context,

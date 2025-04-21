@@ -11,21 +11,21 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-     stream: AuthService.fireAuth().authUserState(),
-     builder: (context, snapshot) {
-      switch (snapshot.connectionState) {
-        case ConnectionState.active:
-        final currentUser = snapshot.data;
-          if(currentUser == null) {
-            return LoginView();
+      stream: AuthService.fireAuth().authUserState(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.active:
+            final currentUser = snapshot.data;
+            if (currentUser == null) {
+              return LoginView();
+            } else if (!currentUser.isEmailVerified) {
+              return EmailVerificationView();
             }
-          else if(!currentUser.isEmailVerified) {
-            return EmailVerificationView();
-          }
-          return RecipeListView();
-        default:
-        return spinkitRotatingCircle;
-      }
-    },);
+            return RecipeListView();
+          default:
+            return spinkitRotatingCircle;
+        }
+      },
+    );
   }
 }

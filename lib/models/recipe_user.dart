@@ -1,23 +1,17 @@
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
 
 class RecipeUser {
-  final String id;
+  final int id;
   final String email;
 
-  RecipeUser({
-    required this.id,
-    required this.email
-    });
+  RecipeUser({required this.id, required this.email});
 
-  RecipeUser.fromRowMap(Map<String, Object?> dbRowMap):
-  id = dbRowMap[userIdCoulmn] as String,
-  email = dbRowMap[emailCoulmn] as String;
+  RecipeUser.fromRowMap(Map<String, Object?> dbRowMap)
+    : id = dbRowMap[userIdCoulmn] as int,
+      email = dbRowMap[emailCoulmn] as String;
 
-  Map<String, Object?> toMap(){
-    return {
-      userIdCoulmn: id,
-      emailCoulmn: email,
-    };
+  Map<String, Object?> toMap() {
+    return {userIdCoulmn: id, emailCoulmn: email};
   }
 
   @override
@@ -29,4 +23,3 @@ class RecipeUser {
   @override
   int get hashCode => id.hashCode;
 }
-

@@ -1,5 +1,16 @@
-// data base constants 
+// data base constants
 const dbName = "recipes.db";
+
+// recipe related
+
+const allowedCoulmns = [
+  titleCoulmn,
+  ingredientsCoulmn,
+  stepsCoulmn,
+  categoryCoulmn,
+  photoPathCoulmn,
+  isFavoritecoulmn,
+];
 
 // recipe table constants
 
@@ -12,8 +23,7 @@ const categoryCoulmn = "category";
 const photoPathCoulmn = "photo_path";
 const isFavoritecoulmn = "is_favorite";
 
-const recipeTable = 
-""" 
+const recipeTable = """ 
 CREATE TABLE "recipe" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"title"	TEXT NOT NULL,
@@ -28,18 +38,15 @@ CREATE TABLE "recipe" (
 );
 """;
 
-
 // user table constants
 
 const idCoulmn = "id";
 const emailCoulmn = "email";
 
-const userTable = 
-"""
+const userTable = """
 CREATE TABLE IF NOT EXISTS "user" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"email"	TEXT NOT NULL UNIQUE,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
 """;
-

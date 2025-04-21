@@ -10,7 +10,7 @@ import 'package:my_recipe_box/views/recipes/detailed_recipe_view.dart';
 import 'package:my_recipe_box/views/recipes/recipe_list_view.dart';
 import 'package:my_recipe_box/views/recipes/recipe_view.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyRecipeBox());
@@ -23,17 +23,17 @@ class MyRecipeBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-    initialRoute: authWrapperRoute,
-    routes: {
-      authWrapperRoute: (context) => AuthWrapper(),
-      loginViewRoute: (context) => LoginView(),
-      registerViewRoute: (context) => RegisterView(),
-      emailVerificationRoute: (context) => EmailVerificationView(),
-      recipeViewRoute: (context) => RecipeView(),
-      recipeListViewRoute: (context) => RecipeListView(),
-      detailedRecipeView: (context) => DetailedRecipeView(),
-      createUpdateRecipeView: (context) => CreateUpdateRecipeView(),
-   });
+      initialRoute: authWrapperRoute,
+      routes: {
+        authWrapperRoute: (context) => AuthWrapper(),
+        loginViewRoute: (context) => LoginView(),
+        registerViewRoute: (context) => RegisterView(),
+        emailVerificationRoute: (context) => EmailVerificationView(),
+        recipeViewRoute: (context) => RecipeView(),
+        recipeListViewRoute: (context) => RecipeListView(),
+        detailedRecipeView: (context) => DetailedRecipeView(),
+        createUpdateRecipeView: (context) => CreateUpdateRecipeView(),
+      },
+    );
   }
 }
-

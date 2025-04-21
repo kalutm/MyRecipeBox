@@ -6,10 +6,10 @@ class AuthUser {
 
   const AuthUser({required this.email, required this.isEmailVerified});
 
-  factory AuthUser.fromFirebase(User currentUser){
+  factory AuthUser.fromFirebase(User currentUser) {
     return AuthUser(
-      email: currentUser.email, 
-      isEmailVerified: currentUser.emailVerified
-      );
+      email: currentUser.email,
+      isEmailVerified: currentUser.emailVerified,
+    );
   }
 }

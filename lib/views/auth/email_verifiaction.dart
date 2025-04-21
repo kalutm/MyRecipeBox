@@ -21,28 +21,29 @@ class _EmailVerificationViewState extends State<EmailVerificationView> {
   }
 
   void _startEmailVerificationCheck() async {
-    try{
-      final wasVerificationSuccessful = await AuthService.fireAuth().startEmailVerificationCheck();
-      if(mounted && wasVerificationSuccessful){
-        Navigator.of(context).pushNamedAndRemoveUntil(loginViewRoute, (route) => false);
+    try {
+      final wasVerificationSuccessful =
+          await AuthService.fireAuth().startEmailVerificationCheck();
+      if (mounted && wasVerificationSuccessful) {
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(loginViewRoute, (route) => false);
       }
-    }
-    on EmailVerificationCheckTimeoutException{
-      if(mounted){
+    } on EmailVerificationCheckTimeoutException {
+      if (mounted) {
         await showErrorDialog(
           context: context,
           errorMessage: verificationTimedOutErrorMessage,
-          );
+        );
       }
-    }
-    catch(authError){
-      if(mounted){
+    } catch (authError) {
+      if (mounted) {
         await showErrorDialog(
           context: context,
-           errorMessage: unknownErrorMessage
-           );
+          errorMessage: unknownErrorMessage,
+        );
       }
-     dev_tool.log(authError.toString());
+      dev_tool.log(authError.toString());
     }
   }
 
@@ -52,6 +53,7 @@ class _EmailVerificationViewState extends State<EmailVerificationView> {
     _startEmailVerificationCheck();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,12 +67,14 @@ class _EmailVerificationViewState extends State<EmailVerificationView> {
           verificationEmailHaveBeenSentTextWidget,
           TextButton(
             onPressed: () {
-              Navigator.of(context).pushReplacementNamed(emailVerificationRoute);
-              },
-            child: sendVerificatoinAgainTextWidget
-            )
+              Navigator.of(
+                context,
+              ).pushReplacementNamed(emailVerificationRoute);
+            },
+            child: sendVerificatoinAgainTextWidget,
+          ),
         ],
-      )
+      ),
     );
   }
 }

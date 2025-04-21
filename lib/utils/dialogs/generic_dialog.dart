@@ -7,7 +7,7 @@ Future<T?> showGenericDialog<T>({
   required DialogBuilder<T> dialogBuilder,
   required String title,
   required String content,
-}){
+}) {
   final actionsMap = dialogBuilder();
   return showDialog<T?>(
     context: context,
@@ -15,18 +15,21 @@ Future<T?> showGenericDialog<T>({
       return AlertDialog(
         title: Text(title),
         content: Text(content),
-        actions: actionsMap.keys.map(
-          (action) => TextButton(
-            onPressed: () {
-              final T? value = actionsMap[action];
-              if(value != null){
-                return Navigator.of(context).pop(value);
-              }
-              Navigator.of(context).pop();
-            },
-            child: Text(action),
-            ),
-        ).toList()
+        actions:
+            actionsMap.keys
+                .map(
+                  (action) => TextButton(
+                    onPressed: () {
+                      final T? value = actionsMap[action];
+                      if (value != null) {
+                        return Navigator.of(context).pop(value);
+                      }
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(action),
+                  ),
+                )
+                .toList(),
       );
     },
   );

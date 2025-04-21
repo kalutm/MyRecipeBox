@@ -25,13 +25,11 @@ class _RegisterViewState extends State<RegisterView> {
     _passwordController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: registerTextWidget,
-        backgroundColor: appBarColor,
-      ),
+      appBar: AppBar(title: registerTextWidget, backgroundColor: appBarColor),
       body: Column(
         children: [
           TextField(
@@ -51,7 +49,10 @@ class _RegisterViewState extends State<RegisterView> {
           TextButton(
             onPressed: () async {
               try {
-                final AuthUser user = await AuthService.fireAuth().register(_emailController.text, _passwordController.text);
+                final AuthUser user = await AuthService.fireAuth().register(
+                  _emailController.text,
+                  _passwordController.text,
+                );
                 if (context.mounted) {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     emailVerificationRoute,
@@ -63,37 +64,37 @@ class _RegisterViewState extends State<RegisterView> {
                   if (context.mounted) {
                     await showErrorDialog(
                       context: context,
-                      errorMessage: weakPasswordErrorMessage
-                      );
+                      errorMessage: weakPasswordErrorMessage,
+                    );
                   }
                 } else if (authError is EmailAlreadyInUseAuthException) {
                   if (context.mounted) {
                     await showErrorDialog(
                       context: context,
-                      errorMessage: emailAlreadyInUSeErrorMessage
-                      );
+                      errorMessage: emailAlreadyInUSeErrorMessage,
+                    );
                   }
                 } else if (authError is InvalidEmailAuthException) {
                   if (context.mounted) {
                     await showErrorDialog(
                       context: context,
-                      errorMessage: invalidEmailErrorMessage
-                      );
+                      errorMessage: invalidEmailErrorMessage,
+                    );
                   }
                 } else {
                   if (context.mounted) {
                     await showErrorDialog(
                       context: context,
-                      errorMessage: unknownErrorMessage
-                      );
+                      errorMessage: unknownErrorMessage,
+                    );
                   }
                 }
               } catch (authError) {
                 if (context.mounted) {
                   await showErrorDialog(
                     context: context,
-                    errorMessage: unknownErrorMessage
-                    );
+                    errorMessage: unknownErrorMessage,
+                  );
                 }
               }
             },

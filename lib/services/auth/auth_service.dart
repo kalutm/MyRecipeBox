@@ -1,16 +1,13 @@
-
 import 'package:my_recipe_box/services/auth/auth_interface.dart';
 import 'package:my_recipe_box/services/auth/auth_user.dart';
 import 'package:my_recipe_box/services/auth/firebase_auth.dart';
 
-class AuthService implements AuthInterface{
+class AuthService implements AuthInterface {
   final AuthInterface someAuth;
 
-  const AuthService({
-    required this.someAuth
-  });
+  const AuthService({required this.someAuth});
 
-  factory AuthService.fireAuth(){
+  factory AuthService.fireAuth() {
     return AuthService(someAuth: FireAuth());
   }
 
@@ -24,16 +21,19 @@ class AuthService implements AuthInterface{
   Future<void> initializeApp() => someAuth.initializeApp();
 
   @override
-  Future<AuthUser> login(String email, String password) => someAuth.login(email, password);
+  Future<AuthUser> login(String email, String password) =>
+      someAuth.login(email, password);
 
   @override
   Future<void> logout() => someAuth.logout();
 
   @override
-  Future<AuthUser> register(String email, String password) => someAuth.register(email, password);
+  Future<AuthUser> register(String email, String password) =>
+      someAuth.register(email, password);
   @override
   Future<void> sendVerificationEmail() => someAuth.sendVerificationEmail();
 
   @override
-  Future<bool> startEmailVerificationCheck() => someAuth.startEmailVerificationCheck();
+  Future<bool> startEmailVerificationCheck() =>
+      someAuth.startEmailVerificationCheck();
 }
