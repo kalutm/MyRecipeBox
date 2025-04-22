@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:my_recipe_box/exceptions/crud/crud_exceptions.dart';
 import 'package:my_recipe_box/models/recipe.dart';
+import 'package:my_recipe_box/models/recipe_user.dart';
 import 'package:my_recipe_box/services/crud/database_service.dart';
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
 import 'package:sqflite/sqflite.dart';
@@ -7,6 +9,50 @@ import 'dart:developer' as dev_tool show log;
 
 class RecipeService {
   final databaseService = DatabaseService();
+  RecipeUser? _currentUser;
+
+  Stream<List<Recipe>> get recipeStream => _recipeStreamController.stream.map((recipeList) => recipeList.where((recipe) {
+    final currentUser = _currentUser;
+    if(currentUser == null) throw UserShouldBeSetBeforeReadingRecipes();
+
+    return recipe.userId == currentUser.id;
+  },).toList());
+
+  Stream<List<Recipe>> get favoriteRecipeStream => recipeStream.map((userRecipeList) => userRecipeList.where((userRecipe) => userRecipe.isFavorite).toList());
+
+  late final StreamController<List<Recipe>> _recipeStreamController;
+  List<Recipe> _cachedRecipes = [];
+
+  static final _cachedInstance = RecipeService._instance();
+
+  RecipeService._instance(){
+    _recipeStreamController = StreamController<List<Recipe>>.broadcast(
+      onListen: () => _recipeStreamController.add(_cachedRecipes)
+    );
+  }
+
+  Future<void> setCurrentUser(RecipeUser user) async{
+    _currentUser = user;
+    try {
+    await _cacheAllRecipes();
+  } catch (crudError) {
+    dev_tool.log(crudError.toString());
+    rethrow;
+  }
+  }
+
+  factory RecipeService(){
+    return _cachedInstance;
+  }
+
+  Future<void> _cacheAllRecipes() async{
+
+    final allRecipes = await getAllRecipes();
+    _cachedRecipes = allRecipes;
+    _recipeStreamController.add(_cachedRecipes);
+
+  }
+
 
   Future<Recipe> createRecipe({required int userId}) async {
     try {
@@ -18,7 +64,12 @@ class RecipeService {
       if (id == 0) {
         throw CouldNotCreateRecipeCrudException();
       }
-      return Recipe(id: id, userId: userId);
+      final newRecipe = Recipe(id: id, userId: userId);
+
+      _cachedRecipes.add(newRecipe);
+      _recipeStreamController.add(_cachedRecipes);
+
+      return recipe;
     } on DatabaseException catch (crudError) {
       dev_tool.log(crudError.toString());
       throw CrudException();
@@ -109,7 +160,7 @@ class RecipeService {
     }
   }
 
-  Future<void> updataRecipeCoulmn({
+  Future<int> updataRecipeCoulmn({
     required int id,
     required String coulmn,
     required Object? newValue,
@@ -133,6 +184,13 @@ class RecipeService {
       if (updateCount == 0) {
         CouldNotUpdateRecipeCrudException();
       }
+
+      final updatedRecipe = await getRecipe(id: id);
+      _cachedRecipes.removeWhere((recipe) => recipe.id == id);
+      _cachedRecipes.add(updatedRecipe);
+      _recipeStreamController.add(_cachedRecipes);
+
+      return updateCount;
     } on CouldNotFindRcipeCrudException {
       rethrow;
     } on DatabaseException catch (crudError) {
@@ -159,6 +217,10 @@ class RecipeService {
       if (deletCount == 0) {
         throw CouldNotDeleteRecipeCrudException();
       }
+
+    _cachedRecipes.removeWhere((recipe) => recipe.id == id);
+    _recipeStreamController.add(_cachedRecipes);
+      
     } on CouldNotFindRcipeCrudException {
       rethrow;
     } on DatabaseException catch (crudError) {
@@ -173,7 +235,11 @@ class RecipeService {
     try {
       final database = await databaseService.database;
 
-      return await database.delete(recipeTable);
+      final deletedCount = await database.delete(recipeTable);
+      _cachedRecipes = [];
+      _recipeStreamController.add(_cachedRecipes);
+
+      return deletedCount;
     } on DatabaseException catch (crudError) {
       dev_tool.log(crudError.toString());
       throw CrudException();
