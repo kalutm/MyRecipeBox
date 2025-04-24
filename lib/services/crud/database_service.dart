@@ -43,8 +43,8 @@ class DatabaseService {
   }
 
   Future<void> _onCreate(Database database, int version) async {
-    await database.execute(userTable);
-    await database.execute(recipeTable);
+    await database.execute(createUserTable);
+    await database.execute(createRecipeTable);
   }
 
   Future<void> close() async {

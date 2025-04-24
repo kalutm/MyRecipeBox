@@ -13,17 +13,20 @@ const allowedCoulmns = [
 ];
 
 // recipe table constants
+const userTable = "user";
+const recipeTable = "recipe";
+
 
 const recipeIdCoulmn = "id";
 const userIdCoulmn = "user_id";
 const titleCoulmn = "title";
 const ingredientsCoulmn = "ingredients";
-const stepsCoulmn = "stpes";
+const stepsCoulmn = "steps";
 const categoryCoulmn = "category";
 const photoPathCoulmn = "photo_path";
 const isFavoritecoulmn = "is_favorite";
 
-const recipeTable = """ 
+const createRecipeTable = """ 
 CREATE TABLE "recipe" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"title"	TEXT NOT NULL,
@@ -43,7 +46,7 @@ CREATE TABLE "recipe" (
 const idCoulmn = "id";
 const emailCoulmn = "email";
 
-const userTable = """
+const createUserTable = """
 CREATE TABLE IF NOT EXISTS "user" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"email"	TEXT NOT NULL UNIQUE,

@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:my_recipe_box/models/recipe.dart';
+import 'package:my_recipe_box/utils/call_backs.dart';
 
-class RecipeList extends StatefulWidget {
-  const RecipeList({super.key});
+class RecipeList extends StatelessWidget {
+  final List<Recipe> recipes;
+  final RecipeCallback onDeleteRecipe;
+  final RecipeCallback onUpdateRecipe;
 
-  @override
-  State<RecipeList> createState() => _RecipeListViewState();
-}
+  const RecipeList({
+    super.key,
+    required this.recipes,
+    required this.onDeleteRecipe,
+    required this.onUpdateRecipe,
+  });
 
-class _RecipeListViewState extends State<RecipeList> {
   @override
   Widget build(BuildContext context) {
     return const Placeholder();

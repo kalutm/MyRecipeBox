@@ -33,4 +33,4 @@ class CouldNotUpdateRecipeCrudException implements Exception {}
 // generic
 class CrudException implements Exception {}
 
-class UserShouldBeSetBeforeReadingRecipes implements Exception{}
+class UserShouldBeSetBeforeReadingRecipes implements Exception {}

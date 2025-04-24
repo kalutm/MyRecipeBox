@@ -17,6 +17,6 @@ const verificationEmailHaveBeenSentTextWidget = Text(
   "Email verification link have been sent to your email",
 );
 
-// recipe 
+// recipe
 const recipesTextWidget = Text("Recipe's");
 const noRecipesYetTextWidget = Text("You don't have any recipe's yet");

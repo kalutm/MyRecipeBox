@@ -34,3 +34,7 @@ const emailAlreadyInUSeErrorMessage =
 // email verification error messages
 const verificationTimedOutErrorMessage =
     "Verification has timed out please click the resend button";
+
+// create update recipe error messages
+const pleaseFillOutTheFieldsErrorMessage =
+    "Please fill out all the required fields before you save";

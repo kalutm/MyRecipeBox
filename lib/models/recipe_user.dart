@@ -7,7 +7,7 @@ class RecipeUser {
   RecipeUser({required this.id, required this.email});
 
   RecipeUser.fromRowMap(Map<String, Object?> dbRowMap)
-    : id = dbRowMap[userIdCoulmn] as int,
+    : id = dbRowMap[idCoulmn] as int,
       email = dbRowMap[emailCoulmn] as String;
 
   Map<String, Object?> toMap() {

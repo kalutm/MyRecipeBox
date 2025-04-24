@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
 
 class Recipe {
-  final int? id;
+  final int id;
   final int userId;
   final String title;
   final List<String> ingredients;
@@ -12,14 +12,11 @@ class Recipe {
   final bool isFavorite;
 
   Recipe({
-    this.id,
+    required this.id,
     required this.userId,
-    this.title = 'omlete',
-    this.ingredients = const ["egg", "oil"],
-    this.steps = const [
-      "first heat the pan with the oil",
-      "then cook the egg in the pan",
-    ],
+    required this.title,
+    required this.ingredients,
+    required this.steps,
     this.category,
     this.photoPath,
     this.isFavorite = false,
@@ -46,6 +43,7 @@ class Recipe {
 
   Map<String, Object?> toMap() {
     return {
+      idCoulmn: id,
       userIdCoulmn: userId,
       titleCoulmn: title,
       ingredientsCoulmn: jsonEncode(ingredients),

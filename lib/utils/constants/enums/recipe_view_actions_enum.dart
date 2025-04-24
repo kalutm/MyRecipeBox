@@ -1,4 +1,1 @@
-enum Settings {
-  logout,
-  database,
-}
+enum Settings { logout, database }
