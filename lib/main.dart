@@ -7,7 +7,6 @@ import 'package:my_recipe_box/views/auth/login_view.dart';
 import 'package:my_recipe_box/views/auth/register_view.dart';
 import 'package:my_recipe_box/views/recipes/create_update_recipe_view.dart';
 import 'package:my_recipe_box/views/recipes/detailed_recipe_view.dart';
-import 'package:my_recipe_box/views/recipes/recipe_list_view.dart';
 import 'package:my_recipe_box/views/recipes/recipe_view.dart';
 
 void main() async {

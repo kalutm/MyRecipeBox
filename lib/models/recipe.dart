@@ -30,11 +30,12 @@ class Recipe {
         jsonDecode(dbRowMap[ingredientsCoulmn] as String),
       ),
       steps = List<String>.from(jsonDecode(dbRowMap[stepsCoulmn] as String)),
+      // WARNING: Don't try to assign into dbRowMap again Kaleb 😡
       category =
-          dbRowMap[categoryCoulmn] =
-              dbRowMap[photoPathCoulmn] == null
-                  ? null
-                  : dbRowMap[photoPathCoulmn] as String,
+          dbRowMap[categoryCoulmn] == null
+              ? null
+              : dbRowMap[categoryCoulmn] as String,
+
       photoPath =
           dbRowMap[photoPathCoulmn] == null
               ? null

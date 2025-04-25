@@ -185,7 +185,6 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
     isEdit = recipe != null;
 
     if (isEdit) {
-      // 1) cache the incoming recipe so saveRecipe never sees a null id
       _cachedRecipe = recipe!;
     }
 
@@ -200,6 +199,7 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
             .map((ingredient) => TextEditingController(text: ingredient))
             .toList() ??
         [TextEditingController()];
+        dev_tool.log(ingredientControllers.runtimeType.toString());
 
     stepControllers =
         recipe?.steps

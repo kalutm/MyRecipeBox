@@ -118,6 +118,7 @@ class RecipeService {
     try {
       final database = await databaseService.database;
       final recipes = await database.query(recipeTable);
+      dev_tool.log(recipes.runtimeType.toString());
 
       return recipes
           .map((recipeRowMap) => Recipe.fromRowMap(recipeRowMap))
