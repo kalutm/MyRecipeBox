@@ -86,7 +86,7 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
       return;
     }
 
-    // 🛑 Make sure _cachedRecipe is not null before proceeding
+    // Making sure _cachedRecipe is not null before proceeding
     if (_cachedRecipe == null) {
       await showErrorDialog(
         context: context,
@@ -109,11 +109,15 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
 
     try {
       await _recipeService.updateRecipe(newRecipe: updatedRecipe);
-      dev_tool.log('✅ Recipe updated successfully');
+      dev_tool.log(' Recipe updated successfully');
       if (mounted) Navigator.of(context).pop();
     } catch (error) {
-      dev_tool.log('❌ Error saving recipe: $error');
-      if (mounted) await showErrorDialog(context: context, errorMessage: 'Failed to save recipe:\n$error');
+      dev_tool.log(' Error saving recipe: $error');
+      if (mounted)
+        await showErrorDialog(
+          context: context,
+          errorMessage: 'Failed to save recipe:\n$error',
+        );
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -173,6 +177,15 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
     return newRecipe;
   }
 
+  deleteRecipeIfTitleIsEmpty() async {
+    final currentRecipe = _cachedRecipe;
+    if (currentRecipe != null) {
+      if (titleController.text.isEmpty) {
+        _recipeService.deleteRecipe(id: currentRecipe.id);
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -183,10 +196,6 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
     final recipe = widget.recipe;
 
     isEdit = recipe != null;
-
-    if (isEdit) {
-      _cachedRecipe = recipe!;
-    }
 
     _recipeFuture = createOrGetRecipe(context);
 
@@ -199,7 +208,7 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
             .map((ingredient) => TextEditingController(text: ingredient))
             .toList() ??
         [TextEditingController()];
-        dev_tool.log(ingredientControllers.runtimeType.toString());
+    dev_tool.log(ingredientControllers.runtimeType.toString());
 
     stepControllers =
         recipe?.steps
@@ -221,6 +230,7 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
     for (var controller in stepControllers) {
       controller.dispose();
     }
+    deleteRecipeIfTitleIsEmpty();
     super.dispose();
   }
 

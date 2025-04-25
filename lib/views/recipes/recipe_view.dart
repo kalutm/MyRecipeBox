@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_recipe_box/models/recipe.dart';
 import 'package:my_recipe_box/services/auth/auth_service.dart';
 import 'package:my_recipe_box/services/auth/auth_user.dart';
 import 'package:my_recipe_box/services/crud/recipe_service.dart';
 import 'package:my_recipe_box/services/crud/recipe_user_service.dart';
 import 'package:my_recipe_box/utils/constants/colors.dart';
+import 'package:my_recipe_box/utils/constants/databas_constants.dart';
 import 'package:my_recipe_box/utils/constants/enums/recipe_view_actions_enum.dart';
 import 'package:my_recipe_box/utils/constants/route_constants.dart';
 import 'package:my_recipe_box/utils/dialogs/logout_dialog.dart';
@@ -20,13 +22,33 @@ class RecipeView extends StatefulWidget {
 }
 
 class _RecipeViewState extends State<RecipeView> {
+  bool isFavoriteList = false;
+
+  late Future<void> _recipeUserFuture;
+
+  late Stream<List<Recipe>> _favoriteRecipeStream;
+  late Stream<List<Recipe>> _recipeStream;
+
   late RecipeService _recipeService;
   late RecipeUserService _recipeUserService;
+
+  Future<void> _createOrGetUser() async {
+    await _recipeUserService.createOrGetUser(
+      email: currentUser.email!,
+      setUser: (recipeUser) async {
+        await _recipeService.setCurrentUser(recipeUser);
+      },
+    );
+  }
 
   @override
   initState() {
     _recipeService = RecipeService();
     _recipeUserService = RecipeUserService();
+    _favoriteRecipeStream = _recipeService.favoriteRecipeStream;
+    _recipeStream = _recipeService.recipeStream;
+
+    _recipeUserFuture = _createOrGetUser();
     super.initState();
   }
 
@@ -38,9 +60,18 @@ class _RecipeViewState extends State<RecipeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: recipesTextWidget,
+        title: isFavoriteList ? favoriteRecipesTextWidget : recipesTextWidget,
         backgroundColor: appBarColor,
         actions: [
+          IconButton(
+            onPressed: () {
+              setState(() => isFavoriteList = !isFavoriteList);
+            },
+            icon: Icon(
+              isFavoriteList ? Icons.star : Icons.star_border,
+              color: Colors.amberAccent,
+            ),
+          ),
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -85,12 +116,7 @@ class _RecipeViewState extends State<RecipeView> {
         ],
       ),
       body: FutureBuilder(
-        future: _recipeUserService.createOrGetUser(
-          email: currentUser.email!,
-          setUser: (recipeUser) async {
-            await _recipeService.setCurrentUser(recipeUser);
-          },
-        ),
+        future: _recipeUserFuture,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
@@ -98,7 +124,7 @@ class _RecipeViewState extends State<RecipeView> {
                 return Center(child: Text(snapshot.error!.toString()));
               }
               return StreamBuilder(
-                stream: _recipeService.recipeStream,
+                stream: isFavoriteList ? _favoriteRecipeStream : _recipeStream,
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.active:
@@ -121,6 +147,13 @@ class _RecipeViewState extends State<RecipeView> {
                                         CreateUpdateRecipeView(recipe: recipe),
                               ),
                             ),
+                        onUpdateFavorite: (recipe) async {
+                          await _recipeService.updataRecipeCoulmn(
+                            id: recipe.id,
+                            coulmn: isFavoritecoulmn,
+                            newValue: recipe.isFavorite ? 0 : 1,
+                          );
+                        },
                       );
 
                     default:

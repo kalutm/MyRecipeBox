@@ -16,7 +16,6 @@ const allowedCoulmns = [
 const userTable = "user";
 const recipeTable = "recipe";
 
-
 const recipeIdCoulmn = "id";
 const userIdCoulmn = "user_id";
 const titleCoulmn = "title";

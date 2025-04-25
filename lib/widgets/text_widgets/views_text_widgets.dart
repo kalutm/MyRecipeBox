@@ -19,4 +19,9 @@ const verificationEmailHaveBeenSentTextWidget = Text(
 
 // recipe
 const recipesTextWidget = Text("Recipe's");
+const favoriteRecipesTextWidget = Text("Favorite's");
 const noRecipesYetTextWidget = Text("You don't have any recipe's yet");
+
+// detailed recipe
+
+const detailedRecipeTextWidget = Text("Your Recipe");

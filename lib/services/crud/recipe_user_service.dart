@@ -27,7 +27,7 @@ class RecipeUserService {
         where: "$emailCoulmn = ?",
         whereArgs: [email.toLowerCase()],
       );
-      
+
       if (recipeUsers.isNotEmpty) {
         throw UserAlreadyFoundCrudException();
       }

@@ -29,7 +29,6 @@ class MyRecipeBox extends StatelessWidget {
         registerViewRoute: (context) => RegisterView(),
         emailVerificationRoute: (context) => EmailVerificationView(),
         recipeViewRoute: (context) => RecipeView(),
-        detailedRecipeViewRoute: (context) => DetailedRecipeView(),
         createUpdateRecipeViewRoute: (context) => CreateUpdateRecipeView(),
       },
     );

@@ -74,7 +74,7 @@ class RecipeService {
         throw CouldNotCreateRecipeCrudException();
       }
       final newRecipe = await getRecipe(id: id);
-    
+
       _cachedRecipes.add(newRecipe);
       _recipeStreamController.add(_cachedRecipes);
 
