@@ -88,6 +88,30 @@ class RecipeService {
     }
   }
 
+  Future<Recipe> insertSeedRecipe({required Recipe recipe}) async {
+    try {
+      final database = await databaseService.database;
+
+      final id = await database.insert(recipeTable, recipe.toMap());
+
+      if (id == 0) {
+        throw CouldNotCreateRecipeCrudException();
+      }
+      final newRecipe = await getRecipe(id: id);
+
+      _cachedRecipes.add(newRecipe);
+      _recipeStreamController.add(_cachedRecipes);
+
+      return newRecipe;
+    } on DatabaseException catch (crudError) {
+      dev_tool.log(crudError.toString());
+      throw CrudException();
+    } catch (crudError) {
+      dev_tool.log(crudError.toString());
+      rethrow;
+    }
+  }
+
   Future<Recipe> getRecipe({required int id}) async {
     try {
       final database = await databaseService.database;

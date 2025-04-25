@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_recipe_box/utils/constants/colors.dart';
 
 // login
 const loginTextWidget = Text("login");
@@ -21,7 +22,21 @@ const verificationEmailHaveBeenSentTextWidget = Text(
 const recipesTextWidget = Text("Recipe's");
 const favoriteRecipesTextWidget = Text("Favorite's");
 const noRecipesYetTextWidget = Text("You don't have any recipe's yet");
+const seedTextWidget = Text("seed", style: TextStyle(color: textColor));
+
+// create update recipe
+
+// Image related
+const pickImageTextWidget = Text('Pick an image');
+const cameraTextWidget = Text("Camera");
+const galleryTextWidget = Text("Gallery");
+
+//
+const favoriteTextWidget = Text('Favorite');
+const ingredientsTextWidget = Text('Ingredients');
+const addIngredientTextWidget = Text('Add Ingredient');
+const stepsTextWidget = Text("Steps");
+const addStepsTextWidget = Text('Add Steps');
 
 // detailed recipe
-
 const detailedRecipeTextWidget = Text("Your Recipe");

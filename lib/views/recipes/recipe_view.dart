@@ -32,6 +32,12 @@ class _RecipeViewState extends State<RecipeView> {
   late RecipeService _recipeService;
   late RecipeUserService _recipeUserService;
 
+  Future<void> seedAllRecipes() async {
+    for (final r in demoRecipes) {
+      await _recipeService.insertSeedRecipe(recipe: r);
+    }
+  }
+
   Future<void> _createOrGetUser() async {
     await _recipeUserService.createOrGetUser(
       email: currentUser.email!,
@@ -63,6 +69,12 @@ class _RecipeViewState extends State<RecipeView> {
         title: isFavoriteList ? favoriteRecipesTextWidget : recipesTextWidget,
         backgroundColor: appBarColor,
         actions: [
+          TextButton(
+            onPressed: () async {
+              // if you want to seed recipes in the future
+            },
+            child: seedTextWidget,
+          ),
           IconButton(
             onPressed: () {
               setState(() => isFavoriteList = !isFavoriteList);

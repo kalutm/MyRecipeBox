@@ -4,6 +4,7 @@ import 'package:my_recipe_box/models/recipe.dart';
 import 'package:my_recipe_box/utils/call_backs.dart';
 import 'package:my_recipe_box/utils/constants/colors.dart';
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
+import 'package:my_recipe_box/utils/constants/view_constants.dart';
 import 'package:my_recipe_box/widgets/sized_box.dart';
 import 'package:my_recipe_box/widgets/text_widgets/views_text_widgets.dart';
 
@@ -65,7 +66,7 @@ class _DetailedRecipeViewState extends State<DetailedRecipeView> {
                 ? Icon(Icons.local_pizza)
                 : Image.file(File(widget.recipe.photoPath!)),
             sizedBoxHieght8,
-            Text("$categoryCoulmn: ${widget.recipe.category ?? "not set"}"),
+            Text("$categoryCoulmn: ${widget.recipe.category ?? notSetString}"),
             sizedBoxHieght8,
             Text(ingredientsCoulmn),
             ...widget.recipe.ingredients.map((ingredient) => Text(ingredient)),

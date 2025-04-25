@@ -5,8 +5,10 @@ import 'package:my_recipe_box/models/recipe.dart';
 import 'package:my_recipe_box/services/auth/auth_service.dart';
 import 'package:my_recipe_box/services/crud/recipe_service.dart';
 import 'package:my_recipe_box/services/crud/recipe_user_service.dart';
+import 'package:my_recipe_box/utils/constants/view_constants.dart';
 import 'package:my_recipe_box/utils/dialogs/error_dialog.dart';
 import 'package:my_recipe_box/widgets/sized_box.dart';
+import 'package:my_recipe_box/widgets/text_widgets/views_text_widgets.dart';
 import 'package:my_recipe_box/widgets/waiting/spinkit_rotating_circle.dart';
 import 'dart:developer' as dev_tool show log;
 
@@ -86,11 +88,10 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
       return;
     }
 
-    // Making sure _cachedRecipe is not null before proceeding
     if (_cachedRecipe == null) {
       await showErrorDialog(
         context: context,
-        errorMessage: 'Unexpected error: recipe not initialized.',
+        errorMessage: recipeNotInitializedErrorMessage,
       );
       setState(() => _isSaving = false);
       return;
@@ -109,15 +110,15 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
 
     try {
       await _recipeService.updateRecipe(newRecipe: updatedRecipe);
-      dev_tool.log(' Recipe updated successfully');
       if (mounted) Navigator.of(context).pop();
     } catch (error) {
-      dev_tool.log(' Error saving recipe: $error');
-      if (mounted)
+      dev_tool.log(error.toString());
+      if (mounted) {
         await showErrorDialog(
           context: context,
-          errorMessage: 'Failed to save recipe:\n$error',
+          errorMessage: failedToSaveRecipe,
         );
+      }
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }
@@ -128,14 +129,14 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
       context: context,
       builder:
           (_) => SimpleDialog(
-            title: Text('Pick an image'),
+            title: pickImageTextWidget,
             children: [
               SimpleDialogOption(
-                child: Text('Camera'),
+                child: cameraTextWidget,
                 onPressed: () => Navigator.pop(context, ImageSource.camera),
               ),
               SimpleDialogOption(
-                child: Text('Gallery'),
+                child: galleryTextWidget,
                 onPressed: () => Navigator.pop(context, ImageSource.gallery),
               ),
             ],
@@ -237,14 +238,16 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(isEdit ? 'Edit Recipe' : 'Create Recipe')),
+      appBar: AppBar(
+        title: Text(isEdit ? editRecipeString : createRecipeString),
+      ),
       body: FutureBuilder(
         future: _recipeFuture,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+                return Center(child: Text(snapshot.error.toString()));
               }
               return SingleChildScrollView(
                 padding: EdgeInsets.all(16),
@@ -270,8 +273,8 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                     TextFormField(
                       controller: titleController,
                       decoration: InputDecoration(
-                        labelText: 'Recipe Title',
-                        hintText: "required",
+                        labelText: recipeTitlestring,
+                        hintText: requiredString,
                       ),
                     ),
                     sizedBoxHieght16,
@@ -280,18 +283,18 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                       onChanged:
                           (val) => setState(() => selectedCategory = val),
                       items:
-                          ['Breakfast', 'Lunch', 'Dinner', 'Dessert']
+                          categoryItemsList
                               .map(
                                 (c) =>
                                     DropdownMenuItem(value: c, child: Text(c)),
                               )
                               .toList(),
-                      decoration: InputDecoration(labelText: 'Category'),
+                      decoration: InputDecoration(labelText: categoryString),
                     ),
                     sizedBoxHieght16,
                     Row(
                       children: [
-                        Text('Favorite'),
+                        favoriteTextWidget,
                         IconButton(
                           icon: Icon(
                             isFavoriteSelected
@@ -310,7 +313,7 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Ingredients'),
+                        ingredientsTextWidget,
                         ...ingredientControllers.asMap().entries.map((entry) {
                           final index = entry.key;
                           final controller = entry.value;
@@ -320,7 +323,7 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                                 child: TextFormField(
                                   controller: controller,
                                   decoration: InputDecoration(
-                                    hintText: "required",
+                                    hintText: requiredString,
                                   ),
                                 ),
                               ),
@@ -334,7 +337,7 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                         TextButton.icon(
                           onPressed: addIngredientField,
                           icon: Icon(Icons.add),
-                          label: Text('Add Ingredient'),
+                          label: addIngredientTextWidget,
                         ),
                       ],
                     ),
@@ -342,7 +345,7 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Steps'),
+                        stepsTextWidget,
                         ...stepControllers.asMap().entries.map((entry) {
                           final index = entry.key;
                           final controller = entry.value;
@@ -352,7 +355,7 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                                 child: TextFormField(
                                   controller: controller,
                                   decoration: InputDecoration(
-                                    hintText: "required",
+                                    hintText: requiredString,
                                   ),
                                 ),
                               ),
@@ -366,7 +369,7 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                         TextButton.icon(
                           onPressed: addStepsField,
                           icon: Icon(Icons.add),
-                          label: Text('Add Steps'),
+                          label: addStepsTextWidget,
                         ),
                       ],
                     ),
@@ -384,7 +387,9 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                                 ),
                               )
                               : Icon(Icons.save),
-                      label: Text(_isSaving ? 'Saving...' : 'Save Recipe'),
+                      label: Text(
+                        _isSaving ? savingprogressString : saveRecipeString,
+                      ),
                     ),
                   ],
                 ),

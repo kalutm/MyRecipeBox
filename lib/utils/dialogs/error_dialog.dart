@@ -38,3 +38,6 @@ const verificationTimedOutErrorMessage =
 // create update recipe error messages
 const pleaseFillOutTheFieldsErrorMessage =
     "Please fill out all the required fields before you save";
+const recipeNotInitializedErrorMessage =
+    "Unexpected error: recipe not initialized.";
+const failedToSaveRecipe = "Failed to save recipe";
