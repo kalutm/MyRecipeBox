@@ -35,7 +35,6 @@ const galleryTextWidget = Text("Gallery");
 const favoriteTextWidget = Text('Favorite');
 const ingredientsTextWidget = Text('Ingredients');
 const addIngredientTextWidget = Text('Add Ingredient');
-const stepsTextWidget = Text("Steps");
 const addStepsTextWidget = Text('Add Steps');
 
 // detailed recipe

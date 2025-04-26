@@ -9,6 +9,8 @@ const recipeTitlestring = 'Recipe Title';
 const requiredString = "*";
 const categoryString = "Category";
 const categoryItemsList = ['Breakfast', 'Lunch', 'Dinner', 'Dessert'];
+const stepsString = "Steps";
+const ingredientsString = "Ingredients";
 
 const savingprogressString = "saving...";
 const saveRecipeString = "Save Recipe";

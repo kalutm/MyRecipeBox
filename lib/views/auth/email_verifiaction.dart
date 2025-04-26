@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:my_recipe_box/exceptions/auth/auth_exceptions.dart';
 import 'package:my_recipe_box/services/auth/auth_service.dart';
-import 'package:my_recipe_box/utils/constants/colors.dart';
 import 'package:my_recipe_box/utils/constants/route_constants.dart';
-import 'package:my_recipe_box/utils/dialogs/error_dialog.dart';
 import 'package:my_recipe_box/widgets/text_widgets/views_text_widgets.dart';
 import 'dart:developer' as dev_tool show log;
 
@@ -16,64 +13,86 @@ class EmailVerificationView extends StatefulWidget {
 }
 
 class _EmailVerificationViewState extends State<EmailVerificationView> {
+  bool _canResendEmail = false;
+  Timer? _resendTimer;
+  int _remainingSeconds = 30;
+
   void _sendEmailVerification() async {
-    AuthService.fireAuth().sendVerificationEmail();
+    await AuthService.fireAuth().sendVerificationEmail();
+    setState(() {
+      _canResendEmail = false;
+      _remainingSeconds = 30; // Reset the timer
+    });
+    _startResendTimer();
   }
 
-  void _startEmailVerificationCheck() async {
-    try {
-      final wasVerificationSuccessful =
-          await AuthService.fireAuth().startEmailVerificationCheck();
-      if (mounted && wasVerificationSuccessful) {
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil(loginViewRoute, (route) => false);
+  void _startResendTimer() {
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remainingSeconds > 0) {
+        setState(() {
+          _remainingSeconds--;
+        });
+      } else {
+        setState(() {
+          _canResendEmail = true;
+        });
+        timer.cancel();
       }
-    } on EmailVerificationCheckTimeoutException {
-      if (mounted) {
-        await showErrorDialog(
-          context: context,
-          errorMessage: verificationTimedOutErrorMessage,
-        );
-      }
-    } catch (authError) {
-      if (mounted) {
-        await showErrorDialog(
-          context: context,
-          errorMessage: unknownErrorMessage,
-        );
-      }
-      dev_tool.log(authError.toString());
-    }
+    });
   }
 
   @override
   void initState() {
     _sendEmailVerification();
-    _startEmailVerificationCheck();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _resendTimer?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: emailVerificatoinTextWidget,
-        backgroundColor: appBarColor,
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          verificationEmailHaveBeenSentTextWidget,
-          TextButton(
-            onPressed: () {
-              Navigator.of(
-                context,
-              ).pushReplacementNamed(emailVerificationRoute);
-            },
-            child: sendVerificatoinAgainTextWidget,
+      appBar: AppBar(title: emailVerificatoinTextWidget),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.email_outlined, size: 60.0, color: Colors.grey),
+              const SizedBox(height: 24.0),
+              Text(
+                'Please verify your email address.',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16.0),
+              verificationEmailHaveBeenSentTextWidget,
+              const SizedBox(height: 24.0),
+              ElevatedButton(
+                onPressed: _canResendEmail ? _sendEmailVerification : null,
+                child: Text(
+                  _canResendEmail
+                      ? sendVerificatoinAgainTextWidget.data!
+                      : 'Resend Email (${_remainingSeconds}s)', // Use the local variable
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed(loginViewRoute);
+                },
+                child: const Text('Already verified? Log in'),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

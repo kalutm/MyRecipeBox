@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:my_recipe_box/exceptions/auth/auth_exceptions.dart';
 import 'package:my_recipe_box/services/auth/auth_service.dart';
 import 'package:my_recipe_box/services/auth/auth_user.dart';
-import 'package:my_recipe_box/utils/constants/colors.dart';
 import 'package:my_recipe_box/utils/constants/hint_texts.dart';
 import 'package:my_recipe_box/utils/constants/route_constants.dart';
 import 'package:my_recipe_box/utils/dialogs/error_dialog.dart';
@@ -29,85 +28,94 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: registerTextWidget, backgroundColor: appBarColor),
-      body: Column(
-        children: [
-          TextField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            enableSuggestions: false,
-            autocorrect: false,
-            decoration: InputDecoration(hintText: emailHint),
-          ),
-          TextField(
-            controller: _passwordController,
-            enableSuggestions: false,
-            autocorrect: false,
-            obscureText: true,
-            decoration: InputDecoration(hintText: passwordHint),
-          ),
-          TextButton(
-            onPressed: () async {
-              try {
-                final AuthUser user = await AuthService.fireAuth().register(
-                  _emailController.text,
-                  _passwordController.text,
-                );
-                if (context.mounted) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    emailVerificationRoute,
-                    (route) => false,
-                  );
-                }
-              } on AuthException catch (authError) {
-                if (authError is WeakPasswordAuthException) {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context: context,
-                      errorMessage: weakPasswordErrorMessage,
+      appBar: AppBar(title: registerTextWidget),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Create an Account',
+                style: Theme.of(context).textTheme.headlineSmall,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24.0),
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: const InputDecoration(
+                  labelText: emailHint,
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _passwordController,
+                enableSuggestions: false,
+                autocorrect: false,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: passwordHint,
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 24.0),
+              ElevatedButton(
+                onPressed: () async {
+                  try {
+                    final AuthUser user = await AuthService.fireAuth().register(
+                      _emailController.text,
+                      _passwordController.text,
                     );
+                    if (context.mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        emailVerificationRoute,
+                        (route) => false,
+                      );
+                    }
+                  } on AuthException catch (authError) {
+                    String errorMessage = unknownErrorMessage;
+                    if (authError is WeakPasswordAuthException) {
+                      errorMessage = weakPasswordErrorMessage;
+                    } else if (authError is EmailAlreadyInUseAuthException) {
+                      errorMessage = emailAlreadyInUSeErrorMessage;
+                    } else if (authError is InvalidEmailAuthException) {
+                      errorMessage = invalidEmailErrorMessage;
+                    }
+                    if (context.mounted) {
+                      await showErrorDialog(
+                        context: context,
+                        errorMessage: errorMessage,
+                      );
+                    }
+                  } catch (_) {
+                    if (context.mounted) {
+                      await showErrorDialog(
+                        context: context,
+                        errorMessage: unknownErrorMessage,
+                      );
+                    }
                   }
-                } else if (authError is EmailAlreadyInUseAuthException) {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context: context,
-                      errorMessage: emailAlreadyInUSeErrorMessage,
-                    );
-                  }
-                } else if (authError is InvalidEmailAuthException) {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context: context,
-                      errorMessage: invalidEmailErrorMessage,
-                    );
-                  }
-                } else {
-                  if (context.mounted) {
-                    await showErrorDialog(
-                      context: context,
-                      errorMessage: unknownErrorMessage,
-                    );
-                  }
-                }
-              } catch (authError) {
-                if (context.mounted) {
-                  await showErrorDialog(
-                    context: context,
-                    errorMessage: unknownErrorMessage,
-                  );
-                }
-              }
-            },
-            child: registerTextWidget,
+                },
+                child: SizedBox(
+                  height: 48.0,
+                  child: Center(child: registerTextWidget),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed(loginViewRoute);
+                },
+                child: toLoginTextWidget,
+              ),
+            ],
           ),
-          SizedBox(height: 20),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed(loginViewRoute);
-            },
-            child: toLoginTextWidget,
-          ),
-        ],
+        ),
       ),
     );
   }

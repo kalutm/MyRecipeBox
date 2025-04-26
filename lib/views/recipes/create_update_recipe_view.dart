@@ -22,22 +22,17 @@ class CreateUpdateRecipeView extends StatefulWidget {
 
 class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
   late final bool isEdit;
-
   bool _isSaving = false;
-
   late List<TextEditingController> ingredientControllers;
   late List<TextEditingController> stepControllers;
   late TextEditingController titleController;
   bool isFavoriteSelected = false;
   String? selectedCategory;
-  String? photoPath;
   File? pickedImageFile;
   final ImagePicker _picker = ImagePicker();
-
   Recipe? _cachedRecipe;
   late final RecipeService _recipeService;
   late final RecipeUserService _recipeUserService;
-
   late Future<Recipe> _recipeFuture;
 
   void addIngredientField() {
@@ -60,7 +55,6 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
     for (TextEditingController controller in ingredientControllers) {
       if (controller.text.isEmpty) return true;
     }
-
     for (TextEditingController controller in stepControllers) {
       if (controller.text.isEmpty) return true;
     }
@@ -69,7 +63,6 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
 
   void saveRecipe() async {
     if (_isSaving) return;
-
     setState(() => _isSaving = true);
 
     final title = titleController.text;
@@ -160,10 +153,10 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
   }
 
   Future<Recipe> createOrGetRecipe(BuildContext context) async {
-    final recivedRecipe = widget.recipe;
-    if (recivedRecipe != null) {
-      _cachedRecipe = recivedRecipe;
-      return recivedRecipe;
+    final receivedRecipe = widget.recipe;
+    if (receivedRecipe != null) {
+      _cachedRecipe = receivedRecipe;
+      return receivedRecipe;
     }
     final existingRecipe = _cachedRecipe;
     if (existingRecipe != null) {
@@ -180,43 +173,32 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
 
   deleteRecipeIfTitleIsEmpty() async {
     final currentRecipe = _cachedRecipe;
-    if (currentRecipe != null) {
-      if (titleController.text.isEmpty) {
-        _recipeService.deleteRecipe(id: currentRecipe.id);
-      }
+    if (currentRecipe != null && titleController.text.isEmpty) {
+      _recipeService.deleteRecipe(id: currentRecipe.id);
     }
   }
 
   @override
   void initState() {
     super.initState();
-
     _recipeService = RecipeService();
     _recipeUserService = RecipeUserService();
-
     final recipe = widget.recipe;
-
     isEdit = recipe != null;
-
     _recipeFuture = createOrGetRecipe(context);
-
     titleController = TextEditingController(text: recipe?.title);
     isFavoriteSelected = recipe?.isFavorite ?? false;
     selectedCategory = recipe?.category;
-
     ingredientControllers =
         recipe?.ingredients
             .map((ingredient) => TextEditingController(text: ingredient))
             .toList() ??
         [TextEditingController()];
-    dev_tool.log(ingredientControllers.runtimeType.toString());
-
     stepControllers =
         recipe?.steps
             .map((step) => TextEditingController(text: step))
             .toList() ??
         [TextEditingController()];
-
     if (recipe?.photoPath != null) {
       pickedImageFile = File(recipe!.photoPath!);
     }
@@ -237,9 +219,15 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEdit ? editRecipeString : createRecipeString),
+        title: Text(
+          isEdit ? editRecipeString : createRecipeString,
+          style: theme.appBarTheme.titleTextStyle,
+        ),
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        iconTheme: theme.appBarTheme.iconTheme,
       ),
       body: FutureBuilder(
         future: _recipeFuture,
@@ -250,34 +238,52 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                 return Center(child: Text(snapshot.error.toString()));
               }
               return SingleChildScrollView(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Recipe Image Picker
                     GestureDetector(
-                      onTap: () => pickImage(), // choose from camera/gallery
+                      onTap: () => pickImage(),
                       child: Container(
                         width: double.infinity,
                         height: 200,
-                        color: Colors.grey[300],
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                         child:
                             pickedImageFile == null
-                                ? Icon(Icons.camera_alt, size: 50)
-                                : Image.file(
-                                  pickedImageFile!,
-                                  fit: BoxFit.cover,
+                                ? Icon(
+                                  Icons.camera_alt,
+                                  size: 50,
+                                  color: theme.hintColor,
+                                )
+                                : ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.file(
+                                    pickedImageFile!,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                       ),
                     ),
                     sizedBoxHieght16,
+
+                    // Title
                     TextFormField(
                       controller: titleController,
                       decoration: InputDecoration(
                         labelText: recipeTitlestring,
                         hintText: requiredString,
+                        border: theme.inputDecorationTheme.border,
+                        focusedBorder: theme.inputDecorationTheme.focusedBorder,
+                        labelStyle: theme.inputDecorationTheme.labelStyle,
                       ),
                     ),
                     sizedBoxHieght16,
+
+                    // Category Dropdown
                     DropdownButtonFormField<String>(
                       value: selectedCategory,
                       onChanged:
@@ -289,96 +295,154 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                                     DropdownMenuItem(value: c, child: Text(c)),
                               )
                               .toList(),
-                      decoration: InputDecoration(labelText: categoryString),
+                      decoration: InputDecoration(
+                        labelText: categoryString,
+                        border: theme.inputDecorationTheme.border,
+                        focusedBorder: theme.inputDecorationTheme.focusedBorder,
+                        labelStyle: theme.inputDecorationTheme.labelStyle,
+                      ),
                     ),
                     sizedBoxHieght16,
+
+                    // Favorite Toggle
                     Row(
                       children: [
                         favoriteTextWidget,
+                        const Spacer(),
                         IconButton(
                           icon: Icon(
                             isFavoriteSelected
                                 ? Icons.favorite
                                 : Icons.favorite_border,
+                            color: Colors.redAccent,
                           ),
                           onPressed:
                               () => setState(
                                 () => isFavoriteSelected = !isFavoriteSelected,
                               ),
-                          color: Colors.red,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ingredientsTextWidget,
-                        ...ingredientControllers.asMap().entries.map((entry) {
-                          final index = entry.key;
-                          final controller = entry.value;
-                          return Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  controller: controller,
-                                  decoration: InputDecoration(
-                                    hintText: requiredString,
-                                  ),
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.remove_circle),
-                                onPressed: () => removeIngredientField(index),
-                              ),
-                            ],
-                          );
-                        }),
-                        TextButton.icon(
-                          onPressed: addIngredientField,
-                          icon: Icon(Icons.add),
-                          label: addIngredientTextWidget,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        stepsTextWidget,
-                        ...stepControllers.asMap().entries.map((entry) {
-                          final index = entry.key;
-                          final controller = entry.value;
-                          return Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  controller: controller,
-                                  decoration: InputDecoration(
-                                    hintText: requiredString,
-                                  ),
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.remove_circle),
-                                onPressed: () => removeStepsField(index),
-                              ),
-                            ],
-                          );
-                        }),
-                        TextButton.icon(
-                          onPressed: addStepsField,
-                          icon: Icon(Icons.add),
-                          label: addStepsTextWidget,
                         ),
                       ],
                     ),
                     sizedBoxHieght16,
+
+                    // Ingredients
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          ingredientsString.toUpperCase(),
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: theme.primaryColor,
+                          ),
+                        ),
+                        sizedBoxHieght8,
+                        ...ingredientControllers.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final controller = entry.value;
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: controller,
+                                    decoration: InputDecoration(
+                                      hintText: requiredString,
+                                      border: theme.inputDecorationTheme.border,
+                                      focusedBorder:
+                                          theme
+                                              .inputDecorationTheme
+                                              .focusedBorder,
+                                      labelStyle:
+                                          theme.inputDecorationTheme.labelStyle,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.remove_circle_outline,
+                                    color: theme.hintColor,
+                                  ),
+                                  onPressed: () => removeIngredientField(index),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                        TextButton.icon(
+                          onPressed: addIngredientField,
+                          icon: Icon(
+                            Icons.add_circle_outline,
+                            color: theme.primaryColor,
+                          ),
+                          label: addIngredientTextWidget,
+                        ),
+                      ],
+                    ),
+                    sizedBoxHieght16,
+
+                    // Steps
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          stepsString.toUpperCase(),
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: theme.primaryColor,
+                          ),
+                        ),
+                        sizedBoxHieght8,
+                        ...stepControllers.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final controller = entry.value;
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: controller,
+                                    decoration: InputDecoration(
+                                      hintText: requiredString,
+                                      border: theme.inputDecorationTheme.border,
+                                      focusedBorder:
+                                          theme
+                                              .inputDecorationTheme
+                                              .focusedBorder,
+                                      labelStyle:
+                                          theme.inputDecorationTheme.labelStyle,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.remove_circle_outline,
+                                    color: theme.hintColor,
+                                  ),
+                                  onPressed: () => removeStepsField(index),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                        TextButton.icon(
+                          onPressed: addStepsField,
+                          icon: Icon(
+                            Icons.add_circle_outline,
+                            color: theme.primaryColor,
+                          ),
+                          label: addStepsTextWidget,
+                        ),
+                      ],
+                    ),
+                    sizedBoxHieght24,
+
+                    // Save Button
                     ElevatedButton.icon(
                       onPressed: _isSaving ? null : saveRecipe,
                       icon:
                           _isSaving
-                              ? SizedBox(
+                              ? const SizedBox(
                                 width: 16,
                                 height: 16,
                                 child: CircularProgressIndicator(
@@ -386,9 +450,21 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
                                   color: Colors.white,
                                 ),
                               )
-                              : Icon(Icons.save),
+                              : const Icon(Icons.save),
                       label: Text(
                         _isSaving ? savingprogressString : saveRecipeString,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.primaryColor,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ],
