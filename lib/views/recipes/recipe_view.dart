@@ -118,8 +118,7 @@ class _RecipeViewState extends State<RecipeView> {
                           content:
                               "Are you sure that you want to delete the recipe: ${recipe.title}",
                         );
-                        if (response)
-                          await _recipeService.deleteRecipe(id: recipe.id);
+                        if (response) await _recipeService.deleteRecipe(id: recipe.id);
                       },
                       onUpdateRecipe:
                           (recipe) => Navigator.of(context).push(

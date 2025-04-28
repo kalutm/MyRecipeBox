@@ -119,8 +119,13 @@ class FireAuth implements AuthInterface {
       if (currentUser != null) {
         await currentUser.sendEmailVerification();
       }
-      throw UserNotLoggedInAuthException();
-    } catch (authError) {
+      else{
+        throw UserNotLoggedInAuthException();
+      }
+    } on UserNotLoggedInAuthException{
+      rethrow;
+    }
+    catch (authError) {
       dev_tool.log(authError.toString());
       throw VerificationSendingAuthException();
     }

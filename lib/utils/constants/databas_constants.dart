@@ -1,5 +1,6 @@
-// data base constants
 import 'package:my_recipe_box/models/recipe.dart';
+
+// data base constants
 
 const dbName = "recipes.db";
 
