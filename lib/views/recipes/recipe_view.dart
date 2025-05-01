@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:my_recipe_box/models/recipe.dart';
 import 'package:my_recipe_box/services/auth/auth_service.dart';
@@ -8,13 +10,10 @@ import 'package:my_recipe_box/utils/constants/databas_constants.dart';
 import 'package:my_recipe_box/utils/constants/enums/recipe_layout_enum.dart';
 import 'package:my_recipe_box/utils/constants/route_constants.dart';
 import 'package:my_recipe_box/utils/dialogs/delete_dialog.dart';
-import 'package:my_recipe_box/utils/dialogs/logout_dialog.dart';
 import 'package:my_recipe_box/views/recipes/create_update_recipe_view.dart';
 import 'package:my_recipe_box/views/recipes/recipe_list.dart';
-import 'package:my_recipe_box/widgets/text_widgets/views_text_widgets.dart';
 import 'package:my_recipe_box/widgets/waiting/spinkit_rotating_circle.dart';
-
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RecipeView extends StatefulWidget {
   const RecipeView({super.key});
@@ -45,6 +44,18 @@ class _RecipeViewState extends State<RecipeView> {
     );
   }
 
+  Future<void> _loadRecipeLayout() async {
+    final prefs = await SharedPreferences.getInstance();
+    _currentLayout =
+        prefs.getString('defaultView') == "grid"
+            ? RecipeLayout.grid
+            : RecipeLayout.list;
+  }
+
+  void _onDefaultViewChanged(String view) {
+    _setLayout(view == 'grid'? RecipeLayout.grid : RecipeLayout.list);
+  }
+
   Future<void> seedAllRecipes() async {
     for (final r in demoRecipes) {
       await _recipeService.insertSeedRecipe(recipe: r);
@@ -53,6 +64,7 @@ class _RecipeViewState extends State<RecipeView> {
 
   @override
   void initState() {
+    _loadRecipeLayout();
     _recipeService = RecipeService();
     _recipeUserService = RecipeUserService();
     _favoriteRecipeStream = _recipeService.favoriteRecipeStream;
@@ -148,70 +160,67 @@ class _RecipeViewState extends State<RecipeView> {
     );
   }
 
+  Widget _Drawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(color: Colors.deepOrange),
+            child: Text(
+              'Welcome!',
+              style: TextStyle(color: Colors.white, fontSize: 24),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text('Home'),
+            onTap: () {
+              Navigator.pop(context); // Close the drawer
+              // navigate if needed
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            onTap: () {
+              Navigator.of(
+                context,
+              ).pushNamed(settingsViewRoute, arguments: _onDefaultViewChanged);
+              // Navigate to settings
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.info),
+            title: Text('About'),
+            onTap: () {
+              Navigator.of(context).pushNamed(aboutViewRoute);
+              // Navigate to favorites page
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            // TODO: Implement Side Drawer
-          },
-        ),
         title: const Text('MyRecipeBox'),
         actions: [
-          TextButton(onPressed: () async {
+          /*TextButton(onPressed: () async {
             await seedAllRecipes();
-          }, child: seedTextWidget),
+          }, child: seedTextWidget),*/
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
               // TODO: Implement Search Functionality
             },
           ),
-          PopupMenuButton<String>(
-            onSelected: (value) async {
-              switch (value) {
-                case 'logout':
-                  final response = await showLogoutDialog(context: context);
-                  if (response) {
-                    await AuthService.fireAuth().logout();
-                    if (context.mounted) {
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        loginViewRoute,
-                        (route) => false,
-                      );
-                    }
-                  }
-                  break;
-                case 'list':
-                  _setLayout(RecipeLayout.list);
-                  break;
-                case 'grid':
-                  _setLayout(RecipeLayout.grid);
-                  break;
-              }
-            },
-            itemBuilder:
-                (BuildContext context) => <PopupMenuEntry<String>>[
-                  const PopupMenuItem<String>(
-                    value: 'list',
-                    child: Text('List View'),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'grid',
-                    child: Text('Grid View'),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'logout',
-                    child: Text('Logout'),
-                  ),
-                  // Add Dark Mode toggle and QR-Share import here in the future
-                ],
-          ),
         ],
       ),
+      drawer: _Drawer(),
       body: _buildBody(),
       floatingActionButton:
           _selectedIndex <
