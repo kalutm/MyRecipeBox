@@ -18,7 +18,7 @@ class RecipeList extends StatelessWidget {
     required this.onDeleteRecipe,
     required this.onUpdateRecipe,
     required this.onUpdateFavorite,
-    this.isGridView = false, // Default to list view
+    this.isGridView = true, // Default to grid view
   });
 
   Widget _buildListItem(BuildContext context, int index) {

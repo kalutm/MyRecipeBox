@@ -5,7 +5,7 @@ import 'package:my_recipe_box/services/auth/auth_user.dart';
 import 'package:my_recipe_box/services/crud/recipe_service.dart';
 import 'package:my_recipe_box/services/crud/recipe_user_service.dart';
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
-import 'package:my_recipe_box/utils/constants/enums/recipe_view_actions_enum.dart';
+import 'package:my_recipe_box/utils/constants/enums/recipe_layout_enum.dart';
 import 'package:my_recipe_box/utils/constants/route_constants.dart';
 import 'package:my_recipe_box/utils/dialogs/delete_dialog.dart';
 import 'package:my_recipe_box/utils/dialogs/logout_dialog.dart';
@@ -14,7 +14,7 @@ import 'package:my_recipe_box/views/recipes/recipe_list.dart';
 import 'package:my_recipe_box/widgets/text_widgets/views_text_widgets.dart';
 import 'package:my_recipe_box/widgets/waiting/spinkit_rotating_circle.dart';
 
-enum RecipeLayout { list, grid }
+
 
 class RecipeView extends StatefulWidget {
   const RecipeView({super.key});
@@ -26,7 +26,7 @@ class RecipeView extends StatefulWidget {
 class _RecipeViewState extends State<RecipeView> {
   int _selectedIndex = 0;
   bool isFavoriteList = false;
-  RecipeLayout _currentLayout = RecipeLayout.grid; // Default to list view
+  RecipeLayout _currentLayout = RecipeLayout.grid; // Default to grid view
 
   late Future<void> _recipeUserFuture;
 
@@ -160,9 +160,9 @@ class _RecipeViewState extends State<RecipeView> {
         ),
         title: const Text('MyRecipeBox'),
         actions: [
-          /*TextButton(onPressed: () async {
+          TextButton(onPressed: () async {
             await seedAllRecipes();
-          }, child: seedTextWidget),*/
+          }, child: seedTextWidget),
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {

@@ -146,8 +146,9 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
     );
 
     if (image != null) {
+      final imagePath = await _recipeService.saveAndGetRecipeImage(image: image);
       setState(() {
-        pickedImageFile = File(image.path);
+        pickedImageFile = File(imagePath);
       });
     }
   }
@@ -178,14 +179,15 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void _initServicesAndControllers() async {
     _recipeService = RecipeService();
     _recipeUserService = RecipeUserService();
+
     final recipe = widget.recipe;
     isEdit = recipe != null;
+
     _recipeFuture = createOrGetRecipe(context);
+
     titleController = TextEditingController(text: recipe?.title);
     isFavoriteSelected = recipe?.isFavorite ?? false;
     selectedCategory = recipe?.category;
@@ -199,9 +201,16 @@ class _CreateUpdateRecipeViewState extends State<CreateUpdateRecipeView> {
             .map((step) => TextEditingController(text: step))
             .toList() ??
         [TextEditingController()];
+
     if (recipe?.photoPath != null) {
       pickedImageFile = File(recipe!.photoPath!);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initServicesAndControllers();
   }
 
   @override

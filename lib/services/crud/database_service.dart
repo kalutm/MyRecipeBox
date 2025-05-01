@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
 import 'package:my_recipe_box/exceptions/crud/crud_exceptions.dart';
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
 import 'package:path/path.dart';
@@ -15,9 +18,22 @@ class DatabaseService {
 
   DatabaseService._instance();
 
+  String? appDocDirPath;
+
   Future<String> get dbPath async {
     final appDocDir = await getApplicationDocumentsDirectory();
+    appDocDirPath = appDocDir.path;
     return join(appDocDir.path, dbName);
+  }
+
+  Future<String> saveToDbAndGetRecipeImagePath({required XFile image}) async {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final fileName = basename(image.path);
+    final savedImage = File('${appDocDir.path}/$fileName');
+
+    await File(image.path).copy(savedImage.path);
+
+    return savedImage.path;
   }
 
   Future<Database> _initDb() async {

@@ -80,7 +80,7 @@ class MyRecipeBox extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.0),
-            borderSide: BorderSide(color: Colors.deepOrange!),
+            borderSide: BorderSide(color: Colors.deepOrange),
           ),
           labelStyle: TextStyle(color: Colors.grey[700]),
         ),

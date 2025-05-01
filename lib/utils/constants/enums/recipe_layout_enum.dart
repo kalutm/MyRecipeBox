@@ -1,0 +1,1 @@
+enum RecipeLayout { list, grid }

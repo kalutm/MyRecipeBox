@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_recipe_box/exceptions/crud/crud_exceptions.dart';
 import 'package:my_recipe_box/models/recipe.dart';
 import 'package:my_recipe_box/models/recipe_user.dart';
@@ -111,6 +113,11 @@ class RecipeService {
       rethrow;
     }
   }
+
+  Future<String> saveAndGetRecipeImage({required XFile image}) async {
+    return await databaseService.saveToDbAndGetRecipeImagePath(image: image);
+  }
+
 
   Future<Recipe> getRecipe({required int id}) async {
     try {

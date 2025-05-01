@@ -22,7 +22,7 @@ const verificationEmailHaveBeenSentTextWidget = Text(
 const recipesTextWidget = Text("Recipe's");
 const favoriteRecipesTextWidget = Text("Favorite's");
 const noRecipesYetTextWidget = Text("You don't have any recipe's yet");
-const seedTextWidget = Text("seed", style: TextStyle(color: textColor));
+const seedTextWidget = Text("seed");
 
 // create update recipe
 
