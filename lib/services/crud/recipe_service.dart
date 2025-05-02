@@ -24,6 +24,8 @@ class RecipeService {
         }).toList(),
   );
 
+  Stream<List<Recipe>> get recipeSearchByTitleStream => _recipeSearchByTitleStreamController.stream;
+
   Stream<List<Recipe>> get favoriteRecipeStream => recipeStream.map(
     (userRecipeList) =>
         userRecipeList.where((userRecipe) => userRecipe.isFavorite).toList(),
@@ -32,12 +34,15 @@ class RecipeService {
   late final StreamController<List<Recipe>> _recipeStreamController;
   List<Recipe> _cachedRecipes = [];
 
+  final StreamController<List<Recipe>> _recipeSearchByTitleStreamController = StreamController<List<Recipe>>.broadcast();
+
   static final _cachedInstance = RecipeService._instance();
 
   RecipeService._instance() {
     _recipeStreamController = StreamController<List<Recipe>>.broadcast(
       onListen: () => _recipeStreamController.add(_cachedRecipes),
     );
+    _recipeSearchByTitleStreamController.add([]);
   }
 
   Future<void> setCurrentUser(RecipeUser user) async {
@@ -199,6 +204,37 @@ class RecipeService {
       dev_tool.log(crudError.toString());
       rethrow;
     }
+  }
+
+  Future<List<Recipe>> getQueryRecipes(String queryString) async {
+    try{
+      final currentUser = _currentUser;
+      if(currentUser == null){
+        throw UserShouldBeSetBeforeReadingRecipes();
+      }
+      final userId = currentUser.id;
+      final database = await databaseService.database;
+
+      final recipes = await database.query(
+      recipeTable,
+      where: 'LOWER($titleCoulmn) LIKE LOWER(?) AND $userIdCoulmn = ?',
+      whereArgs: ['%$queryString%', userId],
+    );
+    return recipes.map((recipe) => Recipe.fromRowMap(recipe)).toList();
+
+    } on DatabaseException catch (crudError) {
+      dev_tool.log(crudError.toString());
+      throw CrudException();
+    } catch (crudError) {
+      dev_tool.log(crudError.toString());
+      rethrow;
+    }
+
+  }
+
+  void onQueryStringChange(String queryString) async{
+    final recipes = await getQueryRecipes(queryString);
+    _recipeSearchByTitleStreamController.add(recipes);
   }
 
   Future<int> updateRecipe({required Recipe newRecipe}) async {

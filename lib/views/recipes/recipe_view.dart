@@ -31,10 +31,14 @@ class _RecipeViewState extends State<RecipeView> {
 
   late Stream<List<Recipe>> _favoriteRecipeStream;
   late Stream<List<Recipe>> _recipeStream;
+  Stream<List<Recipe>>? _recipeSearchByTitleStream;
 
   late RecipeService _recipeService;
   late RecipeUserService _recipeUserService;
 
+  late TextEditingController _searchController;
+  bool _isSearching = false;
+  
   Future<void> _createOrGetUser() async {
     await _recipeUserService.createOrGetUser(
       email: currentUser.email!,
@@ -67,11 +71,19 @@ class _RecipeViewState extends State<RecipeView> {
     _loadRecipeLayout();
     _recipeService = RecipeService();
     _recipeUserService = RecipeUserService();
+    _searchController = TextEditingController();
+
     _favoriteRecipeStream = _recipeService.favoriteRecipeStream;
     _recipeStream = _recipeService.recipeStream;
 
     _recipeUserFuture = _createOrGetUser();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
   }
 
   AuthUser get currentUser => AuthService.fireAuth().currentUser!;
@@ -80,7 +92,31 @@ class _RecipeViewState extends State<RecipeView> {
     setState(() {
       _selectedIndex = index;
       isFavoriteList = (index == 1); // Update isFavoriteList based on tab
+      _isSearching = false; // Close search when tab changes
+      _searchController.clear();
+      _recipeSearchByTitleStream = null;
     });
+  }
+
+  void _onSearchItemChange(){
+    final changedQueryString = _searchController.text;
+    _recipeService.onQueryStringChange(changedQueryString);
+  }
+
+  void _startSearch(){
+    setState(() {
+      _recipeSearchByTitleStream = _recipeService.recipeSearchByTitleStream;
+      _searchController.addListener(_onSearchItemChange);
+      _isSearching = true;
+      
+    });
+  }
+
+  void _stopSearch(){
+    _isSearching = false;
+    _recipeSearchByTitleStream = null;
+    _searchController.removeListener(_onSearchItemChange);
+    _searchController.clear();
   }
 
   void _setLayout(RecipeLayout layout) {
@@ -90,6 +126,77 @@ class _RecipeViewState extends State<RecipeView> {
   }
 
   Widget _buildBody() {
+    return _isSearching ? _buildSearchBar() : _buildRecipeBody();
+  }
+
+  Widget _buildSearchBar(){
+    return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search recipes...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: _stopSearch,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+            Expanded(
+              child: StreamBuilder<List<Recipe>>(
+                      stream: _recipeSearchByTitleStream,
+                      builder: (context, snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.active:
+                            if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return Center(child: Text('No recipes found.', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600])));
+                            } else {
+                              final recipes = snapshot.data!;
+                              return RecipeList(
+                                recipes: recipes,
+                                isGridView: _currentLayout == RecipeLayout.grid,
+                                onDeleteRecipe: (recipe) async {
+                                  final response = await showDeleteDialog(
+                                    context: context,
+                                    title: "Delete",
+                                    content: "Are you sure that you want to delete the recipe: ${recipe.title}",
+                                  );
+                                  if (response) await _recipeService.deleteRecipe(id: recipe.id);
+                                },
+                                onUpdateRecipe: (recipe) => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => CreateUpdateRecipeView(recipe: recipe),
+                                  ),
+                                ),
+                                onUpdateFavorite: (recipe) async {
+                                  await _recipeService.updataRecipeCoulmn(
+                                    id: recipe.id,
+                                    coulmn: isFavoritecoulmn,
+                                    newValue: recipe.isFavorite ? 0 : 1,
+                                  );
+                                },
+                              );
+                            }
+                          default:
+                            return spinkitRotatingCircle;
+                        }
+                      },
+                    ),
+            ),
+          ],
+        ),
+      );
+  }
+
+  Widget _buildRecipeBody(){
     return FutureBuilder(
       future: _recipeUserFuture,
       builder: (context, snapshot) {
@@ -160,7 +267,8 @@ class _RecipeViewState extends State<RecipeView> {
     );
   }
 
-  Widget _Drawer() {
+
+  Widget _drawer() {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -207,20 +315,27 @@ class _RecipeViewState extends State<RecipeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('MyRecipeBox'),
+        title: _isSearching ? null : const Text('MyRecipeBox'),
+        automaticallyImplyLeading: !_isSearching,
         actions: [
           /*TextButton(onPressed: () async {
             await seedAllRecipes();
           }, child: seedTextWidget),*/
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: Icon(_isSearching ? Icons.close : Icons.search),
             onPressed: () {
-              // TODO: Implement Search Functionality
+              setState(() {
+                if (_isSearching) {
+                  _stopSearch();
+                } else {
+                  _startSearch();
+                }
+              });
             },
           ),
         ],
       ),
-      drawer: _Drawer(),
+      drawer: _drawer(),
       body: _buildBody(),
       floatingActionButton:
           _selectedIndex <
