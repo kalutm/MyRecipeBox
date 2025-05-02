@@ -141,7 +141,7 @@ class _RecipeViewState extends State<RecipeView> {
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.clear),
-                  onPressed: _stopSearch,
+                  onPressed: _searchController.clear,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -185,6 +185,8 @@ class _RecipeViewState extends State<RecipeView> {
                                 },
                               );
                             }
+                          case ConnectionState.waiting:
+                            return Center(child: Text('Start typing to search.', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600])));
                           default:
                             return spinkitRotatingCircle;
                         }
