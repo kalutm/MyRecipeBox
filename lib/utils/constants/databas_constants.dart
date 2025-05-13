@@ -15,10 +15,12 @@ const allowedCoulmns = [
   isFavoritecoulmn,
 ];
 
-// recipe table constants
+// table names
 const userTable = "user";
 const recipeTable = "recipe";
+const mealPlanTable = "meal_plan";
 
+// recipe table constants
 const recipeIdCoulmn = "id";
 const userIdCoulmn = "user_id";
 const titleCoulmn = "title";
@@ -29,7 +31,7 @@ const photoPathCoulmn = "photo_path";
 const isFavoritecoulmn = "is_favorite";
 
 const createRecipeTable = """ 
-CREATE TABLE "recipe" (
+CREATE TABLE IF NOT EXISTS "recipe" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"title"	TEXT NOT NULL,
 	"ingredients"	TEXT NOT NULL,
@@ -39,7 +41,7 @@ CREATE TABLE "recipe" (
 	"is_favorite"	INTEGER NOT NULL DEFAULT 0,
 	"user_id"	INTEGER NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("user_id") REFERENCES "recipe"("id")
+	FOREIGN KEY("user_id") REFERENCES "user"("id")
 );
 """;
 
@@ -53,6 +55,27 @@ CREATE TABLE IF NOT EXISTS "user" (
 	"id"	INTEGER NOT NULL UNIQUE,
 	"email"	TEXT NOT NULL UNIQUE,
 	PRIMARY KEY("id" AUTOINCREMENT)
+);
+""";
+
+// meal planner table constants
+
+const mealIdCoulmn = "id";
+const mealUserIdCoulmn = "user_id";
+const mealRecipeIdCoulmn = "recipe_id";
+const mealDateCoulmn = "date";
+const mealTypeCoulmn = "meal_type";
+
+const createMealPlanTable = """ 
+CREATE TABLE IF NOT EXISTS "meal_plan" (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"recipe_id"	INTEGER NOT NULL,
+  "user_id"	INTEGER NOT NULL,
+	"date"	TEXT NOT NULL,
+	"meal_type"	TEXT NOT NULL,
+	PRIMARY KEY("id" AUTOINCREMENT),
+	FOREIGN KEY("recipe_id") REFERENCES "recipe"("id"),
+  FOREIGN KEY("user_id") REFERENCES "user"("id")
 );
 """;
 

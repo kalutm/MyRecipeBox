@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_recipe_box/models/recipe.dart';
 import 'package:my_recipe_box/services/auth/auth_service.dart';
 import 'package:my_recipe_box/services/auth/auth_user.dart';
+import 'package:my_recipe_box/services/crud/meal_planner_service.dart';
 import 'package:my_recipe_box/services/crud/recipe_service.dart';
 import 'package:my_recipe_box/services/crud/recipe_user_service.dart';
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
@@ -37,6 +38,7 @@ class _RecipeViewState extends State<RecipeView> {
 
   late RecipeService _recipeService;
   late RecipeUserService _recipeUserService;
+  late MealPlannerService _mealPlannerService;
 
   late TextEditingController _searchController;
   bool _isSearching = false;
@@ -46,6 +48,7 @@ class _RecipeViewState extends State<RecipeView> {
       email: currentUser.email!,
       setUser: (recipeUser) async {
         await _recipeService.setCurrentUser(recipeUser);
+        await _mealPlannerService.setCurrentUser(recipeUser);
       },
     );
   }
@@ -73,6 +76,8 @@ class _RecipeViewState extends State<RecipeView> {
     _loadRecipeLayout();
     _recipeService = RecipeService();
     _recipeUserService = RecipeUserService();
+    _mealPlannerService = MealPlannerService();
+
     _searchController = TextEditingController();
 
     _favoriteRecipeStream = _recipeService.favoriteRecipeStream;
@@ -202,7 +207,7 @@ class _RecipeViewState extends State<RecipeView> {
   }
 
   Widget _buildRecipeBody(){
-    return isInMealPlanner? MealPlanner() : FutureBuilder(
+    return FutureBuilder(
       future: _recipeUserFuture,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
@@ -210,7 +215,7 @@ class _RecipeViewState extends State<RecipeView> {
             if (snapshot.hasError) {
               return Center(child: Text(snapshot.error!.toString()));
             }
-            return StreamBuilder<List<Recipe>>(
+            return isInMealPlanner ? MealPlanner() : StreamBuilder<List<Recipe>>(
               stream: isFavoriteList ? _favoriteRecipeStream : _recipeStream,
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -230,6 +235,7 @@ class _RecipeViewState extends State<RecipeView> {
                       );
                     }
                     final recipes = snapshot.data!;
+                    
                     return RecipeList(
                       recipes: recipes,
                       isGridView:

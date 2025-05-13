@@ -30,6 +30,13 @@ class NoSuchRecipeCoulmnCrudException implements Exception {}
 
 class CouldNotUpdateRecipeCrudException implements Exception {}
 
+// meal plan related 
+class CouldNotCreateMealPlanCrudException implements Exception {}
+
+class CouldNotFindMealPlanCrudException implements Exception {}
+
+class UserShouldBeSetBeforeReadingMealPlans implements Exception {}
+
 // generic
 class CrudException implements Exception {}
 

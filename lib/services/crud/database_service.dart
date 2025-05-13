@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:image_picker/image_picker.dart';
 import 'package:my_recipe_box/exceptions/crud/crud_exceptions.dart';
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
@@ -61,6 +60,7 @@ class DatabaseService {
   Future<void> _onCreate(Database database, int version) async {
     await database.execute(createUserTable);
     await database.execute(createRecipeTable);
+    await database.execute(createMealPlanTable);
   }
 
   Future<void> close() async {
