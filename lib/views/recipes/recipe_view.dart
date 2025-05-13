@@ -10,6 +10,7 @@ import 'package:my_recipe_box/utils/constants/databas_constants.dart';
 import 'package:my_recipe_box/utils/constants/enums/recipe_layout_enum.dart';
 import 'package:my_recipe_box/utils/constants/route_constants.dart';
 import 'package:my_recipe_box/utils/dialogs/delete_dialog.dart';
+import 'package:my_recipe_box/views/meal_planner.dart';
 import 'package:my_recipe_box/views/recipes/create_update_recipe_view.dart';
 import 'package:my_recipe_box/views/recipes/recipe_list.dart';
 import 'package:my_recipe_box/widgets/waiting/spinkit_rotating_circle.dart';
@@ -25,6 +26,7 @@ class RecipeView extends StatefulWidget {
 class _RecipeViewState extends State<RecipeView> {
   int _selectedIndex = 0;
   bool isFavoriteList = false;
+  bool isInMealPlanner = false;
   RecipeLayout _currentLayout = RecipeLayout.grid; // Default to grid view
 
   late Future<void> _recipeUserFuture;
@@ -92,6 +94,7 @@ class _RecipeViewState extends State<RecipeView> {
     setState(() {
       _selectedIndex = index;
       isFavoriteList = (index == 1); // Update isFavoriteList based on tab
+      isInMealPlanner = (index == 2); // Update isInMealPlanner based on tab
       _isSearching = false; // Close search when tab changes
       _searchController.clear();
       _recipeSearchByTitleStream = null;
@@ -199,7 +202,7 @@ class _RecipeViewState extends State<RecipeView> {
   }
 
   Widget _buildRecipeBody(){
-    return FutureBuilder(
+    return isInMealPlanner? MealPlanner() : FutureBuilder(
       future: _recipeUserFuture,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
@@ -361,7 +364,7 @@ class _RecipeViewState extends State<RecipeView> {
             label: 'Favorites',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
+            icon: Icon(Icons.calendar_month),
             label: 'Meal planner',
           ),
         ],

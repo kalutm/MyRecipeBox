@@ -7,3 +7,4 @@ const detailedRecipeViewRoute = "/detailed_recipe";
 const createUpdateRecipeViewRoute = "/create_update_recipe";
 const settingsViewRoute = "/settings";
 const aboutViewRoute = "/about";
+const mealPlannerViewRoute = "/meal_planner";

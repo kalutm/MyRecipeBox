@@ -1,0 +1,1 @@
+enum ActiveBottomNav {home, favorite, mealPlanner}

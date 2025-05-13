@@ -8,7 +8,7 @@ import 'package:my_recipe_box/views/auth/register_view.dart';
 import 'package:my_recipe_box/views/drawer/about_view.dart';
 import 'package:my_recipe_box/views/recipes/create_update_recipe_view.dart';
 import 'package:my_recipe_box/views/recipes/recipe_view.dart';
-import 'package:my_recipe_box/views/settings/settings_view.dart';
+import 'package:my_recipe_box/views/drawer/settings_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -59,7 +59,7 @@ class _MyRecipeBoxState extends State<MyRecipeBox> {
         recipeViewRoute: (context) => RecipeView(), // Pass the callback
         createUpdateRecipeViewRoute: (context) => const CreateUpdateRecipeView(),
         aboutViewRoute: (context) => const AboutView(),
-        settingsViewRoute: (context) => SettingsView(onThemeChanged: _setTheme), // Pass the callback
+        settingsViewRoute: (context) => SettingsView(onThemeChanged: _setTheme),// Pass the callback
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
