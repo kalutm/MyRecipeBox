@@ -8,7 +8,7 @@ class MealPlan {
   String mealType; // e.g., "Breakfast", "Lunch", "Dinner", "Snack"
    // The selected recipe for this meal
 
-  MealPlan({required this.id, required this.userId, required this.date, required this.mealType, required this.recipeId});
+  MealPlan({this.id, required this.userId, required this.date, required this.mealType, required this.recipeId});
 
   MealPlan.fromRowMap(Map<String, Object?> dbRowMap)
   : id = dbRowMap[mealIdCoulmn] as int,
