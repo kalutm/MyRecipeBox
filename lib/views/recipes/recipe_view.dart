@@ -183,8 +183,7 @@ class _RecipeViewState extends State<RecipeView> {
                             content:
                                 "Are you sure that you want to delete the recipe: ${recipe.title}and meal plans associated with it will be deleted.",
                           );
-                          if (response)
-                            await _recipeService.deleteRecipe(id: recipe.id);
+                          if (response) await _recipeService.deleteRecipe(id: recipe.id);
                         },
                         onUpdateRecipe:
                             (recipe) => Navigator.of(context).push(
@@ -269,10 +268,9 @@ class _RecipeViewState extends State<RecipeView> {
                               context: context,
                               title: "Delete",
                               content:
-                                  "Are you sure that you want to delete the recipe: ${recipe.title}",
+                                  "Are you sure that you want to delete the recipe: ${recipe.title}. Note that all mealplan's associated with this recipe will be deleted",
                             );
-                            if (response)
-                              await _recipeService.deleteRecipe(id: recipe.id);
+                            if (response) await _recipeService.deleteRecipe(id: recipe.id);
                           },
                           onUpdateRecipe:
                               (recipe) => Navigator.of(context).push(
@@ -353,6 +351,7 @@ class _RecipeViewState extends State<RecipeView> {
         title: _isSearching ? null : const Text('MyRecipeBox'),
         automaticallyImplyLeading: !_isSearching,
         actions: [
+          // for testing purpose
           /*TextButton(onPressed: () async {
             await seedAllRecipes();
           }, child: seedTextWidget),*/

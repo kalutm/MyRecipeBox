@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:my_recipe_box/models/meal_plan.dart';
 import 'package:my_recipe_box/models/recipe.dart';
@@ -20,7 +19,7 @@ class _MealPlannerViewState extends State<MealPlanner> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  List<MealPlan> _mealPlans = []; // To hold the planned meals
+  List<MealPlan> _mealPlans = [];
   Recipe? _selectedRecipeForMeal;
   String? _selectedMealType;
 
@@ -61,14 +60,11 @@ class _MealPlannerViewState extends State<MealPlanner> {
     MealPlan mealPlan, {
     required bool isUpdate,
   }) async {
-    // Replace this with your actual logic to save the meal plan
     isUpdate
         ? await _mealPlannerService.updateMealPlan(newMealPlan: mealPlan)
         : await _mealPlannerService.createMealPlan(mealPlan: mealPlan);
-    _loadMealPlans(); // Reload the meal plans after saving
+    _loadMealPlans();
   }
-
-
 
   List<MealPlan> _getMealPlansForDay(DateTime day) {
     return _mealPlans
@@ -94,73 +90,76 @@ class _MealPlannerViewState extends State<MealPlanner> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title:
-                  mealPlan == null
-                      ? const Text('Add Meal Plan')
-                      : Text('Update Meal Plan'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(labelText: 'Meal Type'),
-                    value: _selectedMealType,
-                    items:
-                        <String>['Breakfast', 'Lunch', 'Dinner', 'Dessert'].map(
-                          (String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          },
-                        ).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedMealType = newValue;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  // Implement a way to select a recipe here
-                  // This could be a DropdownButtonFormField<Recipe> or a button
-                  // that navigates to a list of recipes.
-                  // For simplicity, let's assume you have a list of all recipes:
-                  StreamBuilder<List<Recipe>>(
-                    stream: _recipeStream,
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.active:
-                          if (snapshot.hasError) {
-                            return Center(
-                              child: Text('Error: ${snapshot.error}'),
-                            );
-                          }
-                          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                            return Center(child: Text('No recipes found.'));
-                          }
-                          return DropdownButtonFormField<Recipe>(
-                            decoration: const InputDecoration(
-                              labelText: 'Recipe',
-                            ),
-                            value: _selectedRecipeForMeal,
-                            items:
-                                snapshot.data!.map((Recipe recipe) {
-                                  return DropdownMenuItem<Recipe>(
-                                    value: recipe,
-                                    child: Text(recipe.title),
-                                  );
-                                }).toList(),
-                            onChanged: (Recipe? newValue) {
-                              setState(() {
-                                _selectedRecipeForMeal = newValue;
-                              });
-                            },
+              title: Text(
+                mealPlan == null ? 'Add Meal Plan' : 'Update Meal Plan',
+                style: Theme.of(context).textTheme.headlineSmall, // Consistent title
+              ),
+              content: SingleChildScrollView( // Added SingleChildScrollView
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(
+                        labelText: 'Meal Type',
+                        border: OutlineInputBorder(), // Added border
+                      ),
+                      value: _selectedMealType,
+                      items: <String>['Breakfast', 'Lunch', 'Dinner', 'Dessert']
+                          .map(
+                        (String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
                           );
-                        default:
-                          return const Center(child: spinkitRotatingCircle);
-                      }
-                    },
-                  ),
-                ],
+                        },
+                      ).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedMealType = newValue;
+                        });
+                      },
+                      validator: (value) => value == null || value.isEmpty ? 'Please select meal type' : null, //Added validator
+                    ),
+                    const SizedBox(height: 16),
+                    StreamBuilder<List<Recipe>>(
+                      stream: _recipeStream,
+                      builder: (context, snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.active:
+                            if (snapshot.hasError) {
+                              return Center(
+                                child: Text('Error: ${snapshot.error}'),
+                              );
+                            }
+                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Center(child: Text('No recipes found.'));
+                            }
+                            return DropdownButtonFormField<Recipe>(
+                              decoration: const InputDecoration(
+                                labelText: 'Recipe',
+                                border: OutlineInputBorder(), // Added border
+                              ),
+                              value: _selectedRecipeForMeal,
+                              items: snapshot.data!.map((Recipe recipe) {
+                                return DropdownMenuItem<Recipe>(
+                                  value: recipe,
+                                  child: Text(recipe.title),
+                                );
+                              }).toList(),
+                              onChanged: (Recipe? newValue) {
+                                setState(() {
+                                  _selectedRecipeForMeal = newValue;
+                                });
+                              },
+                              validator: (value) => value == null ? 'Please select a recipe' : null, //Added Validator
+                            );
+                          default:
+                            return const Center(child: spinkitRotatingCircle);
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
               actions: <Widget>[
                 TextButton(
@@ -172,6 +171,9 @@ class _MealPlannerViewState extends State<MealPlanner> {
                       _selectedRecipeForMeal = null;
                     });
                   },
+                  style: TextButton.styleFrom( //Added style
+                    foregroundColor: Theme.of(context).textTheme.bodyMedium?.color,
+                  ),
                 ),
                 ElevatedButton(
                   child: const Text('Save'),
@@ -193,7 +195,13 @@ class _MealPlannerViewState extends State<MealPlanner> {
                         _selectedRecipeForMeal = null;
                       });
                     } else {
-                      // Optionally show an error message if not all fields are filled
+                      // Optionally show an error message, I removed the inline error for the dropdowns
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please fill in all fields.'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
                     }
                   },
                 ),
@@ -207,7 +215,7 @@ class _MealPlannerViewState extends State<MealPlanner> {
 
   @override
   void initState() {
-    super.initState(); // Add this line first
+    super.initState();
     _recipeService = RecipeService();
     _mealPlannerService = MealPlannerService();
     _recipeStream = _recipeService.recipeStream;
@@ -220,43 +228,78 @@ class _MealPlannerViewState extends State<MealPlanner> {
     return Scaffold(
       body: Column(
         children: [
-          TableCalendar(
-            firstDay: DateTime.utc(2010, 7, 7),
-            lastDay: DateTime.utc(2040, 7, 7),
-            focusedDay: _focusedDay,
-            calendarFormat: _calendarFormat,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            onDaySelected: _onDaySelected,
-            onFormatChanged: _onFormatChanged,
-            onPageChanged: _onPageChanged,
-            eventLoader: _eventLoader,
-            calendarBuilders: CalendarBuilders(
-              markerBuilder: (context, day, events) {
-                if (events.isNotEmpty) {
-                  return Positioned(
-                    bottom: 1,
-                    left: 6,
-                    right: 6,
-                    child: Container(
-                      height: 16,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${events.length}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
+          Card( // Added Card
+            margin: const EdgeInsets.all(8.0),
+            elevation: 4.0,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TableCalendar(
+                firstDay: DateTime.utc(2010, 7, 7),
+                lastDay: DateTime.utc(2040, 7, 7),
+                focusedDay: _focusedDay,
+                calendarFormat: _calendarFormat,
+                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                onDaySelected: _onDaySelected,
+                onFormatChanged: _onFormatChanged,
+                onPageChanged: _onPageChanged,
+                eventLoader: _eventLoader,
+                calendarBuilders: CalendarBuilders(
+                  markerBuilder: (context, day, events) {
+                    if (events.isNotEmpty) {
+                      return Positioned(
+                        bottom: 1,
+                        left: 6,
+                        right: 6,
+                        child: Container(
+                          height: 16,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${events.length}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                }
-                return null;
-              },
+                      );
+                    }
+                    return null;
+                  },
+                ),
+                headerStyle: HeaderStyle( //Added Header Style
+                  formatButtonTextStyle:
+                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                  formatButtonDecoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  titleTextStyle: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                calendarStyle: CalendarStyle( //Added Calendar Style
+                  defaultTextStyle:
+                      TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                  weekendTextStyle:
+                      TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+                  selectedDecoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  todayDecoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondary,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -264,7 +307,6 @@ class _MealPlannerViewState extends State<MealPlanner> {
             Expanded(child: _buildMealListForDay(_selectedDay!)),
         ],
       ),
-
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () => _showAddMealDialog(context),
@@ -275,82 +317,121 @@ class _MealPlannerViewState extends State<MealPlanner> {
   Widget _buildMealListForDay(DateTime day) {
     final mealsForDay = _getMealPlansForDay(day);
     if (mealsForDay.isEmpty) {
-      return const Center(child: Text('No meals planned for this day.'));
+      return  Center(
+        child: Text('No meals planned for this day.',
+            style: Theme.of(context).textTheme.bodyMedium), // Added theme
+      );
     }
     return ListView.builder(
       itemCount: mealsForDay.length,
       itemBuilder: (context, index) {
         final meal = mealsForDay[index];
         return FutureBuilder<Recipe?>(
-          // Use a FutureBuilder
           future: _recipeService.getRecipe(
             id: meal.recipeId,
-          ), // Fetch the recipe
+          ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return spinkitRotatingCircle; // Show loading indicator
+              return spinkitRotatingCircle;
             }
             if (snapshot.hasError) {
               return Center(
-                child: Text('Error: ${snapshot.error}'),
-              ); // Show error
+                child: Text('Error: ${snapshot.error}',  style: Theme.of(context).textTheme.bodyMedium),
+              );
             }
             final recipe = snapshot.data;
             if (recipe == null) {
-              return const Text(
-                'Recipe not found',
+              return  Card(
+                elevation: 2,
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: ListTile(
+                    title: Text('Meal : ${meal.mealType}',  style: Theme.of(context).textTheme.bodyMedium),
+                    subtitle: const Text(
+                      'Recipe not found',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () async {
+                        final response = await showDeleteDialog(
+                          context: context,
+                          title: "Delete",
+                          content:
+                              "Are you sure that you want to delete the meal plan",
+                        );
+                        if (response) {
+                          await _mealPlannerService.deleteMealPlan(id: meal.id!);
+                          _loadMealPlans();
+                        }
+                      },
+                    ),
+                    onTap: () {
+                      _showAddMealDialog(context, mealPlan: meal);
+                    },
+                  ),
+                ),
               ); // Handle case where recipe is null
             }
-            return ListTile(
-              title: Text(recipe.title),
-              leading: Container(
-                width: 80.0,
-                height: 80.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  color: Colors.grey[300], // Placeholder background
-                ),
-                child:
-                    recipe.photoPath == null
+            return Card( // Added Card
+              elevation: 2,
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: ListTile(
+                  title: Text(recipe.title, style: Theme.of(context).textTheme.bodyMedium), // Added theme
+                  leading: Container(
+                    width: 80.0,
+                    height: 80.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      color: Colors.grey[300],
+                    ),
+                    child: recipe.photoPath == null
                         ? const Icon(
-                          Icons.local_pizza,
-                          size: 40.0,
-                          color: Colors.grey,
-                        )
+                            Icons.local_pizza,
+                            size: 40.0,
+                            color: Colors.grey,
+                          )
                         : ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.file(
-                            File(recipe.photoPath!),
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Icon(
-                                Icons.image_not_supported,
-                                size: 40.0,
-                                color: Colors.grey,
-                              );
-                            },
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.file(
+                              File(recipe.photoPath!),
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(
+                                  Icons.image_not_supported,
+                                  size: 40.0,
+                                  color: Colors.grey,
+                                );
+                              },
+                            ),
                           ),
-                        ),
+                  ),
+                  subtitle: Text(meal.mealType,  style: Theme.of(context).textTheme.bodyMedium), // Added theme
+                  trailing: IconButton(
+                    onPressed: () async {
+                      final response = await showDeleteDialog(
+                        context: context,
+                        title: "Delete",
+                        content:
+                            "Are you sure that you want to delete the meal plan",
+                      );
+                      if (response) {
+                        await _mealPlannerService.deleteMealPlan(id: meal.id!);
+                        _loadMealPlans();
+                      }
+                    },
+                    icon: const Icon(Icons.delete),
+                  ),
+                  onTap: () {
+                    _showAddMealDialog(context, mealPlan: meal);
+                  },
+                ),
               ),
-              subtitle: Text(meal.mealType),
-              trailing: IconButton(
-                onPressed: () async {
-                  final response = await showDeleteDialog(
-                    context: context,
-                    title: "Delete",
-                    content:
-                        "Are you sure that you want to delete the meal plan",
-                  );
-                  if (response){
-                    await _mealPlannerService.deleteMealPlan(id: meal.id!);
-                    _loadMealPlans();
-                  } 
-                },
-                icon: Icon(Icons.delete),
-              ),
-              onTap: () {
-                _showAddMealDialog(context, mealPlan: meal);
-              },
             );
           },
         );

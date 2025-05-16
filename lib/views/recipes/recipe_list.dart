@@ -126,63 +126,76 @@ class RecipeList extends StatelessWidget {
   }
 
   Widget _buildGridItem(BuildContext context, int index) {
-    final recipe = recipes[index];
-    return Card(
-      child: InkWell(
-        onTap:
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => DetailedRecipeView(
-                      recipe: recipe,
-                      onUpdate: onUpdateRecipe,
-                      onUpdateFavorite: onUpdateFavorite,
-                    ),
-              ),
-            ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child:
-                  recipe.photoPath == null
-                      ? const Icon(Icons.local_pizza, size: 60)
-                      : Image.file(
-                        File(recipe.photoPath!),
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.image_not_supported,
-                            size: 60,
-                          );
-                        },
-                      ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    recipe.title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (recipe.category != null)
-                    Text(
-                      recipe.category!,
-                      style: Theme.of(context).textTheme.bodySmall,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                ],
-              ),
-            ),
-          ],
+  final recipe = recipes[index];
+  return Card(
+    child: InkWell(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetailedRecipeView(
+            recipe: recipe,
+            onUpdate: onUpdateRecipe,
+            onUpdateFavorite: onUpdateFavorite,
+          ),
         ),
       ),
-    );
-  }
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: recipe.photoPath == null
+                ? const Icon(Icons.local_pizza, size: 60)
+                : Image.file(
+                    File(recipe.photoPath!),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
+                        Icons.image_not_supported,
+                        size: 60,
+                      );
+                    },
+                  ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  recipe.title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (recipe.category != null)
+                  Text(
+                    recipe.category!,
+                    style: Theme.of(context).textTheme.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end, // Align icons to the end
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        recipe.isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.redAccent,
+                      ),
+                      onPressed: () => onUpdateFavorite(recipe),
+                    ),
+                    IconButton(
+                      onPressed: () => onDeleteRecipe(recipe),
+                      icon: const Icon(Icons.delete, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
