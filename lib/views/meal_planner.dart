@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:my_recipe_box/models/meal_plan.dart';
 import 'package:my_recipe_box/models/recipe.dart';
 import 'package:my_recipe_box/services/crud/meal_planner_service.dart';
 import 'package:my_recipe_box/services/crud/recipe_service.dart';
+import 'package:my_recipe_box/utils/dialogs/delete_dialog.dart';
 import 'package:my_recipe_box/widgets/waiting/spinkit_rotating_circle.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -54,11 +57,18 @@ class _MealPlannerViewState extends State<MealPlanner> {
     });
   }
 
-  Future<void> _saveMealPlan(MealPlan mealPlan) async {
+  Future<void> _saveMealPlan(
+    MealPlan mealPlan, {
+    required bool isUpdate,
+  }) async {
     // Replace this with your actual logic to save the meal plan
-    await _mealPlannerService.createMealPlan(mealPlan: mealPlan);
+    isUpdate
+        ? await _mealPlannerService.updateMealPlan(newMealPlan: mealPlan)
+        : await _mealPlannerService.createMealPlan(mealPlan: mealPlan);
     _loadMealPlans(); // Reload the meal plans after saving
   }
+
+
 
   List<MealPlan> _getMealPlansForDay(DateTime day) {
     return _mealPlans
@@ -71,14 +81,23 @@ class _MealPlannerViewState extends State<MealPlanner> {
         .toList();
   }
 
-  void _showAddMealDialog(BuildContext context) {
+  void _showAddMealDialog(BuildContext context, {MealPlan? mealPlan}) {
+    if (mealPlan != null) {
+      setState(() {
+        _selectedMealType = mealPlan.mealType;
+        _selectedDay = mealPlan.date;
+      });
+    }
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              title: const Text('Add Meal'),
+              title:
+                  mealPlan == null
+                      ? const Text('Add Meal Plan')
+                      : Text('Update Meal Plan'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -161,12 +180,13 @@ class _MealPlannerViewState extends State<MealPlanner> {
                         _selectedMealType != null &&
                         _selectedRecipeForMeal != null) {
                       final newMealPlan = MealPlan(
+                        id: mealPlan?.id,
                         recipeId: _selectedRecipeForMeal!.id,
                         userId: _selectedRecipeForMeal!.userId,
                         date: _selectedDay!,
                         mealType: _selectedMealType!,
                       );
-                      _saveMealPlan(newMealPlan);
+                      _saveMealPlan(newMealPlan, isUpdate: mealPlan != null);
                       Navigator.of(context).pop();
                       setState(() {
                         _selectedMealType = null;
@@ -281,23 +301,56 @@ class _MealPlannerViewState extends State<MealPlanner> {
                 'Recipe not found',
               ); // Handle case where recipe is null
             }
-            return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      meal.mealType,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(recipe.title), // Display recipe title
-                    // Display other recipe details as needed
-                  ],
+            return ListTile(
+              title: Text(recipe.title),
+              leading: Container(
+                width: 80.0,
+                height: 80.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: Colors.grey[300], // Placeholder background
                 ),
+                child:
+                    recipe.photoPath == null
+                        ? const Icon(
+                          Icons.local_pizza,
+                          size: 40.0,
+                          color: Colors.grey,
+                        )
+                        : ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.file(
+                            File(recipe.photoPath!),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(
+                                Icons.image_not_supported,
+                                size: 40.0,
+                                color: Colors.grey,
+                              );
+                            },
+                          ),
+                        ),
               ),
+              subtitle: Text(meal.mealType),
+              trailing: IconButton(
+                onPressed: () async {
+                  final response = await showDeleteDialog(
+                    context: context,
+                    title: "Delete",
+                    content:
+                        "Are you sure that you want to delete the meal plan",
+                  );
+                  if (response){
+                    await _mealPlannerService.deleteMealPlan(id: meal.id!);
+                    _loadMealPlans();
+                  } 
+                },
+                icon: Icon(Icons.delete),
+              ),
+              onTap: () {
+                _showAddMealDialog(context, mealPlan: meal);
+              },
             );
           },
         );

@@ -37,7 +37,7 @@ class DatabaseService {
 
   Future<Database> _initDb() async {
     final path = await dbPath;
-    return await openDatabase(path, version: 1, onCreate: _onCreate);
+    return await openDatabase(path, version: 1, onCreate: _onCreate, onOpen: _onOpen);
   }
 
   Future<Database> get database async {
@@ -61,6 +61,10 @@ class DatabaseService {
     await database.execute(createUserTable);
     await database.execute(createRecipeTable);
     await database.execute(createMealPlanTable);
+  }
+
+  Future<void> _onOpen(Database db) async {
+    await db.execute('PRAGMA foreign_keys = ON');
   }
 
   Future<void> close() async {

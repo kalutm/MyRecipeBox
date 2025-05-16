@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS "meal_plan" (
 	"date"	TEXT NOT NULL,
 	"meal_type"	TEXT NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT),
-	FOREIGN KEY("recipe_id") REFERENCES "recipe"("id"),
+	FOREIGN KEY("recipe_id") REFERENCES "recipe"("id") ON DELETE CASCADE,
   FOREIGN KEY("user_id") REFERENCES "user"("id")
 );
 """;

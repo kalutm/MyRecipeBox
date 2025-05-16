@@ -37,6 +37,10 @@ class CouldNotFindMealPlanCrudException implements Exception {}
 
 class UserShouldBeSetBeforeReadingMealPlans implements Exception {}
 
+class CouldNotUpdateMealPlanCrudException implements Exception {}
+
+class CouldNotDeleteMealPlanCrudException implements Exception {}
+
 // generic
 class CrudException implements Exception {}
 

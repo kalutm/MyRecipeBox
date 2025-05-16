@@ -42,7 +42,7 @@ class _RecipeViewState extends State<RecipeView> {
 
   late TextEditingController _searchController;
   bool _isSearching = false;
-  
+
   Future<void> _createOrGetUser() async {
     await _recipeUserService.createOrGetUser(
       email: currentUser.email!,
@@ -62,7 +62,7 @@ class _RecipeViewState extends State<RecipeView> {
   }
 
   void _onDefaultViewChanged(String view) {
-    _setLayout(view == 'grid'? RecipeLayout.grid : RecipeLayout.list);
+    _setLayout(view == 'grid' ? RecipeLayout.grid : RecipeLayout.list);
   }
 
   Future<void> seedAllRecipes() async {
@@ -106,21 +106,20 @@ class _RecipeViewState extends State<RecipeView> {
     });
   }
 
-  void _onSearchItemChange(){
+  void _onSearchItemChange() {
     final changedQueryString = _searchController.text;
     _recipeService.onQueryStringChange(changedQueryString);
   }
 
-  void _startSearch(){
+  void _startSearch() {
     setState(() {
       _recipeSearchByTitleStream = _recipeService.recipeSearchByTitleStream;
       _searchController.addListener(_onSearchItemChange);
       _isSearching = true;
-      
     });
   }
 
-  void _stopSearch(){
+  void _stopSearch() {
     _isSearching = false;
     _recipeSearchByTitleStream = null;
     _searchController.removeListener(_onSearchItemChange);
@@ -137,76 +136,94 @@ class _RecipeViewState extends State<RecipeView> {
     return _isSearching ? _buildSearchBar() : _buildRecipeBody();
   }
 
-  Widget _buildSearchBar(){
+  Widget _buildSearchBar() {
     return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TextFormField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search recipes...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: _searchController.clear,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          TextFormField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search recipes...',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: _searchController.clear,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            Expanded(
-              child: StreamBuilder<List<Recipe>>(
-                      stream: _recipeSearchByTitleStream,
-                      builder: (context, snapshot) {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.active:
-                            if (snapshot.hasError) {
-                              return Center(child: Text('Error: ${snapshot.error}'));
-                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              return Center(child: Text('No recipes found.', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600])));
-                            } else {
-                              final recipes = snapshot.data!;
-                              return RecipeList(
-                                recipes: recipes,
-                                isGridView: _currentLayout == RecipeLayout.grid,
-                                onDeleteRecipe: (recipe) async {
-                                  final response = await showDeleteDialog(
-                                    context: context,
-                                    title: "Delete",
-                                    content: "Are you sure that you want to delete the recipe: ${recipe.title}",
-                                  );
-                                  if (response) await _recipeService.deleteRecipe(id: recipe.id);
-                                },
-                                onUpdateRecipe: (recipe) => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => CreateUpdateRecipeView(recipe: recipe),
-                                  ),
-                                ),
-                                onUpdateFavorite: (recipe) async {
-                                  await _recipeService.updataRecipeCoulmn(
-                                    id: recipe.id,
-                                    coulmn: isFavoritecoulmn,
-                                    newValue: recipe.isFavorite ? 0 : 1,
-                                  );
-                                },
-                              );
-                            }
-                          case ConnectionState.waiting:
-                            return Center(child: Text('Start typing to search.', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[600])));
-                          default:
-                            return spinkitRotatingCircle;
-                        }
-                      },
-                    ),
+          ),
+          Expanded(
+            child: StreamBuilder<List<Recipe>>(
+              stream: _recipeSearchByTitleStream,
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.active:
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No recipes found.',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Colors.grey[600]),
+                        ),
+                      );
+                    } else {
+                      final recipes = snapshot.data!;
+                      return RecipeList(
+                        recipes: recipes,
+                        isGridView: _currentLayout == RecipeLayout.grid,
+                        onDeleteRecipe: (recipe) async {
+                          final response = await showDeleteDialog(
+                            context: context,
+                            title: "Delete",
+                            content:
+                                "Are you sure that you want to delete the recipe: ${recipe.title}and meal plans associated with it will be deleted.",
+                          );
+                          if (response)
+                            await _recipeService.deleteRecipe(id: recipe.id);
+                        },
+                        onUpdateRecipe:
+                            (recipe) => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder:
+                                    (context) =>
+                                        CreateUpdateRecipeView(recipe: recipe),
+                              ),
+                            ),
+                        onUpdateFavorite: (recipe) async {
+                          await _recipeService.updataRecipeCoulmn(
+                            id: recipe.id,
+                            coulmn: isFavoritecoulmn,
+                            newValue: recipe.isFavorite ? 0 : 1,
+                          );
+                        },
+                      );
+                    }
+                  case ConnectionState.waiting:
+                    return Center(
+                      child: Text(
+                        'Start typing to search.',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    );
+                  default:
+                    return spinkitRotatingCircle;
+                }
+              },
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget _buildRecipeBody(){
+  Widget _buildRecipeBody() {
     return FutureBuilder(
       future: _recipeUserFuture,
       builder: (context, snapshot) {
@@ -215,69 +232,76 @@ class _RecipeViewState extends State<RecipeView> {
             if (snapshot.hasError) {
               return Center(child: Text(snapshot.error!.toString()));
             }
-            return isInMealPlanner ? MealPlanner() : StreamBuilder<List<Recipe>>(
-              stream: isFavoriteList ? _favoriteRecipeStream : _recipeStream,
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.active:
-                    if (snapshot.hasError) {
-                      return Center(child: Text(snapshot.error!.toString()));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(
-                        child: Text(
-                          isFavoriteList
-                              ? 'No favorites yet. Tap ♥ on a recipe to add.'
-                              : 'No recipes yet. Tap "+" to add one.',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: Colors.grey[600]),
-                        ),
-                      );
-                    }
-                    final recipes = snapshot.data!;
-                    
-                    return RecipeList(
-                      recipes: recipes,
-                      isGridView:
-                          _currentLayout ==
-                          RecipeLayout.grid, // Pass the layout state
-                      onDeleteRecipe: (recipe) async {
-                        final response = await showDeleteDialog(
-                          context: context,
-                          title: "Delete",
-                          content:
-                              "Are you sure that you want to delete the recipe: ${recipe.title}",
-                        );
-                        if (response) await _recipeService.deleteRecipe(id: recipe.id);
-                      },
-                      onUpdateRecipe:
-                          (recipe) => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder:
-                                  (context) =>
-                                      CreateUpdateRecipeView(recipe: recipe),
+            return isInMealPlanner
+                ? MealPlanner()
+                : StreamBuilder<List<Recipe>>(
+                  stream:
+                      isFavoriteList ? _favoriteRecipeStream : _recipeStream,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.active:
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(snapshot.error!.toString()),
+                          );
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return Center(
+                            child: Text(
+                              isFavoriteList
+                                  ? 'No favorites yet. Tap ♥ on a recipe to add.'
+                                  : 'No recipes yet. Tap "+" to add one.',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(color: Colors.grey[600]),
                             ),
-                          ),
-                      onUpdateFavorite: (recipe) async {
-                        await _recipeService.updataRecipeCoulmn(
-                          id: recipe.id,
-                          coulmn: isFavoritecoulmn,
-                          newValue: recipe.isFavorite ? 0 : 1,
+                          );
+                        }
+                        final recipes = snapshot.data!;
+
+                        return RecipeList(
+                          recipes: recipes,
+                          isGridView:
+                              _currentLayout ==
+                              RecipeLayout.grid, // Pass the layout state
+                          onDeleteRecipe: (recipe) async {
+                            final response = await showDeleteDialog(
+                              context: context,
+                              title: "Delete",
+                              content:
+                                  "Are you sure that you want to delete the recipe: ${recipe.title}",
+                            );
+                            if (response)
+                              await _recipeService.deleteRecipe(id: recipe.id);
+                          },
+                          onUpdateRecipe:
+                              (recipe) => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => CreateUpdateRecipeView(
+                                        recipe: recipe,
+                                      ),
+                                ),
+                              ),
+                          onUpdateFavorite: (recipe) async {
+                            await _recipeService.updataRecipeCoulmn(
+                              id: recipe.id,
+                              coulmn: isFavoritecoulmn,
+                              newValue: recipe.isFavorite ? 0 : 1,
+                            );
+                          },
                         );
-                      },
-                    );
-                  default:
-                    return const Center(child: spinkitRotatingCircle);
-                }
-              },
-            );
+                      default:
+                        return const Center(child: spinkitRotatingCircle);
+                    }
+                  },
+                );
           default:
             return const Center(child: spinkitRotatingCircle);
         }
       },
     );
   }
-
 
   Widget _drawer() {
     return Drawer(

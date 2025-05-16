@@ -23,11 +23,13 @@ class MealPlannerService {
 
   Future<List<MealPlan>> get getAllUserMealPlans async {
     final currentUser = _currentUser;
-    if(currentUser == null){
+    if (currentUser == null) {
       throw UserShouldBeSetBeforeReadingMealPlans();
     }
     await _cacheAllMealPlans();
-    return allMealPlans.where((mealPlan) => mealPlan.userId == currentUser.id).toList();
+    return allMealPlans
+        .where((mealPlan) => mealPlan.userId == currentUser.id)
+        .toList();
   }
 
   Future<void> setCurrentUser(RecipeUser user) async {
@@ -64,7 +66,7 @@ class MealPlannerService {
         mealPlanTable,
         limit: 1,
         where: "$mealIdCoulmn = ?",
-        whereArgs: [id]
+        whereArgs: [id],
       );
 
       if (mealPlans.isEmpty) {
@@ -72,7 +74,6 @@ class MealPlannerService {
       }
 
       return MealPlan.fromRowMap(mealPlans.first);
-
     } on DatabaseException catch (crudError) {
       dev_tool.log(crudError.toString());
       throw CrudException();
@@ -91,12 +92,10 @@ class MealPlannerService {
     try {
       final database = await _databaseService.database;
       final mealPlans = await database.query(mealPlanTable);
-      dev_tool.log(mealPlans.runtimeType.toString());
 
       return mealPlans
           .map((recipeRowMap) => MealPlan.fromRowMap(recipeRowMap))
           .toList();
-
     } on DatabaseException catch (crudError) {
       dev_tool.log(crudError.toString());
       throw CrudException();
@@ -105,4 +104,58 @@ class MealPlannerService {
       rethrow;
     }
   }
+
+  Future<int> updateMealPlan({required MealPlan newMealPlan}) async {
+    try {
+      final database = await _databaseService.database;
+
+      await getMealPlan(id: newMealPlan.id!);
+      
+      final updateCount = await database.update(
+        mealPlanTable,
+        newMealPlan.toMap(),
+        where: "$mealIdCoulmn = ?",
+        whereArgs: [newMealPlan.id!]
+      );
+
+      if(updateCount == 0) {
+        throw CouldNotUpdateMealPlanCrudException();
+      }
+
+      return updateCount;
+    } on DatabaseException catch (crudError) {
+      dev_tool.log(crudError.toString());
+      throw CrudException();
+    } catch (crudError) {
+      dev_tool.log(crudError.toString());
+      rethrow;
+    }
+  }
+
+  Future<int> deleteMealPlan({required int id}) async {
+    try {
+      final database = await _databaseService.database;
+      await getMealPlan(id: id);
+
+      final deleteCount = await database.delete(
+        mealPlanTable,
+        where: "$mealIdCoulmn = ?",
+        whereArgs: [id]
+      );
+
+      if(deleteCount == 0) {
+        throw CouldNotDeleteMealPlanCrudException();
+      }
+
+      return deleteCount;
+    } on DatabaseException catch (crudError) {
+      dev_tool.log(crudError.toString());
+      throw CrudException();
+    } catch (crudError) {
+      dev_tool.log(crudError.toString());
+      rethrow;
+    }
+  }
+
+
 }
