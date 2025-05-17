@@ -72,92 +72,94 @@ my_recipe_box/
 ├── android/
 ├── ios/
 ├── lib/
-├── firebase_options.dart
-├── main.dart
+│   ├── firebase_options.dart
+│   ├── main.dart
+│   │
+│   ├── exceptions/
+│   │   ├── auth/
+│   │   │   └── auth_exceptions.dart
+│   │   │
+│   │   └── crud/
+│   │       └── crud_exceptions.dart
+│   │
+│   ├── models/
+│   │   ├── meal_plan.dart
+│   │   ├── recipe.dart
+│   │   └── recipe_user.dart
+│   │
+│   ├── services/
+│   │   ├── auth/
+│   │   │   ├── auth_interface.dart
+│   │   │   ├── auth_service.dart
+│   │   │   ├── auth_user.dart
+│   │   │   └── firebase_auth.dart
+│   │   │
+│   │   └── crud/
+│   │       ├── database_service.dart
+│   │       ├── meal_planner_service.dart
+│   │       ├── recipe_service.dart
+│   │       └── recipe_user_service.dart
+│   │
+│   ├── utils/
+│   │   ├── call_backs.dart
+│   │   │
+│   │   ├── constants/
+│   │   │   ├── colors.dart
+│   │   │   ├── databas_constants.dart
+│   │   │   ├── hint_texts.dart
+│   │   │   ├── route_constants.dart
+│   │   │   ├── view_constants.dart
+│   │   │   │
+│   │   │   └── enums/
+│   │   │       ├── active_bottom_nav.dart
+│   │   │       ├── recipe_layout_enum.dart
+│   │   │       └── recipe_view_actions_enum.dart
+│   │   │
+│   │   ├── dialogs/
+│   │   │   ├── delete_dialog.dart
+│   │   │   ├── error_dialog.dart
+│   │   │   ├── generic_dialog.dart
+│   │   │   └── logout_dialog.dart
+│   │   │
+│   │   ├── extensions/
+│   │   │   └── arguments.dart
+│   │   │
+│   │   └── navigation/
+│   │       └── navigation_helpers.dart
+│   │
+│   ├── views/
+│   │   ├── meal_planner.dart
+│   │   │
+│   │   ├── auth/
+│   │   │   ├── auth_wrapper.dart
+│   │   │   ├── email_verifiaction.dart
+│   │   │   ├── login_view.dart
+│   │   │   └── register_view.dart
+│   │   │
+│   │   ├── drawer/
+│   │   │   ├── about_view.dart
+│   │   │   └── settings_view.dart
+│   │   │
+│   │   ├── recipes/
+│   │   │   ├── create_update_recipe_view.dart
+│   │   │   ├── detailed_recipe_view.dart
+│   │   │   ├── recipe_list.dart
+│   │   │   └── recipe_view.dart
+│   │   │
+│   │   └── splash/
+│   │       └── splash_screen.dart
+│   │
+│   └── widgets/
+│       ├── recipe_card.dart
+│       ├── sized_box.dart
+│       │
+│       ├── text_widgets/
+│       │   └── views_text_widgets.dart
+│       │
+│       └── waiting/
+│           └── spinkit_rotating_circle.dart
 │
-├───exceptions
-│   ├───auth
-│   │       auth_exceptions.dart
-│   │       
-│   └───crud
-│           crud_exceptions.dart
-│
-├───models
-│       meal_plan.dart
-│       recipe.dart
-│       recipe_user.dart
-│       
-├───services
-│   ├───auth
-│   │       auth_interface.dart
-│   │       auth_service.dart
-│   │       auth_user.dart
-│   │       firebase_auth.dart
-│   │       
-│   └───crud
-│           database_service.dart
-│           meal_planner_service.dart
-│           recipe_service.dart
-│           recipe_user_service.dart
-│
-├───utils
-│   │   call_backs.dart
-│   │   
-│   ├───constants
-│   │   │   colors.dart
-│   │   │   databas_constants.dart
-│   │   │   hint_texts.dart
-│   │   │   route_constants.dart
-│   │   │   view_constants.dart
-│   │   │   
-│   │   └───enums
-│   │           active_bottom_nav.dart
-│   │           recipe_layout_enum.dart
-│   │           recipe_view_actions_enum.dart
-│   │
-│   ├───dialogs
-│   │       delete_dialog.dart
-│   │       error_dialog.dart
-│   │       generic_dialog.dart
-│   │       logout_dialog.dart
-│   │
-│   ├───extensions
-│   │       arguments.dart
-│   │
-│   └───navigation
-│           navigation_helpers.dart
-│
-├───views
-│   │   meal_planner.dart
-│   │
-│   ├───auth
-│   │       auth_wrapper.dart
-│   │       email_verifiaction.dart
-│   │       login_view.dart
-│   │       register_view.dart
-│   │
-│   ├───drawer
-│   │       about_view.dart
-│   │       settings_view.dart
-│   │
-│   ├───recipes
-│   │       create_update_recipe_view.dart
-│   │       detailed_recipe_view.dart
-│   │       recipe_list.dart
-│   │       recipe_view.dart
-│   │
-│   └───splash
-│           splash_screen.dart
-│
-└───widgets
-    │   recipe_card.dart
-    │   sized_box.dart
-    │
-    ├───text_widgets
-    │       views_text_widgets.dart
-    │
-    └───waiting
-            spinkit_rotating_circle.dart
+└── test/
 └── ...
 ## Future Enhancements
 
