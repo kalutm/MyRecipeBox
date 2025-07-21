@@ -42,12 +42,14 @@ MyRecipeBox is a mobile application built with Flutter designed to be your compr
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/7aaab973-e204-453f-817c-4fde55cd882f" /> 
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/fe23e3ed-5f37-42e2-98dd-34018a4b41ca" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/7e990d23-384e-4f2b-bba6-b481b23cf575" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/30e0bd50-e06a-491a-ae44-5f6d9ea623e1" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/8cc9c999-c4dc-4f84-93d8-2abb70bf9833" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/7bf9235b-0dd0-4efb-8cc6-ade5e550b455" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/48318e0d-fb32-42ab-8355-2977abefc61f" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/b2d6bd90-a800-40e6-8fdd-164549d5ad69" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/1ba28217-9f23-4872-b58c-5fdc1d9dbda9" />
-
-
-
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/5da393ee-3ae0-46e5-9b63-f5f2d43024e9" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/0d4e5968-433f-4e6c-8386-a0a9c6cb857f" />
 
 ## Installation
 
