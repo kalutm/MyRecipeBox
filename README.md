@@ -39,7 +39,8 @@ MyRecipeBox is a mobile application built with Flutter designed to be your compr
 * **(Potentially other Flutter packages for UI, navigation, etc.)**
 
 ## Screenshots
-<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/7aaab973-e204-453f-817c-4fde55cd882f" />
+<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/7aaab973-e204-453f-817c-4fde55cd882f" /> <img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/fe23e3ed-5f37-42e2-98dd-34018a4b41ca" />
+
 
 ## Installation
 
