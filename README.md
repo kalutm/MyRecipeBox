@@ -48,8 +48,8 @@ MyRecipeBox is a mobile application built with Flutter designed to be your compr
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/48318e0d-fb32-42ab-8355-2977abefc61f" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/b2d6bd90-a800-40e6-8fdd-164549d5ad69" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/1ba28217-9f23-4872-b58c-5fdc1d9dbda9" />
-<img width="591" height="1280" alt="image" src="https://github.com/user-attachments/assets/105d0756-3d16-49a1-a023-b22a9be93876" />
-<img width="591" height="1280" alt="image" src="https://github.com/user-attachments/assets/3076fd3e-9483-4f1e-9742-2d5a226e7f2c" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/105d0756-3d16-49a1-a023-b22a9be93876" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/3076fd3e-9483-4f1e-9742-2d5a226e7f2c" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/5da393ee-3ae0-46e5-9b63-f5f2d43024e9" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/0d4e5968-433f-4e6c-8386-a0a9c6cb857f" />
 
