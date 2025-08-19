@@ -38,8 +38,34 @@ Planned features:
 ## 📸 Screenshots
 
 >
-![alt text](image.png) ![alt text](image-1.png)
 
+
+---
+
+## Project Sturcture
+
+lib
+├───exceptions
+│   ├───auth
+│   └───crud
+├───models
+├───services
+│   ├───auth
+│   └───crud
+├───utils
+│   ├───constants
+│   │   └───enums
+│   ├───dialogs
+│   ├───extensions
+│   └───navigation
+├───views
+│   ├───auth
+│   ├───drawer
+│   ├───recipes
+│   └───splash
+└───widgets
+    ├───text_widgets
+    └───waiting
 
 ---
 
