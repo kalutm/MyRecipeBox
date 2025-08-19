@@ -13,7 +13,6 @@ import 'package:my_recipe_box/utils/dialogs/delete_dialog.dart';
 import 'package:my_recipe_box/views/meal_planner.dart';
 import 'package:my_recipe_box/views/recipes/create_update_recipe_view.dart';
 import 'package:my_recipe_box/views/recipes/recipe_list.dart';
-import 'package:my_recipe_box/widgets/text_widgets/views_text_widgets.dart';
 import 'package:my_recipe_box/widgets/waiting/spinkit_rotating_circle.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -348,7 +347,7 @@ class _RecipeViewState extends State<RecipeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: _isSearching ? null : const Text('MyRecipeBox'),
+        title: _isSearching ? null : const Text('Meal Organizer'),
         automaticallyImplyLeading: !_isSearching,
         actions: [
           // for testing purpose

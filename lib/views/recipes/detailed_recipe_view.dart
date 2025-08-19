@@ -2,11 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_recipe_box/models/recipe.dart';
 import 'package:my_recipe_box/utils/call_backs.dart';
-import 'package:my_recipe_box/utils/constants/colors.dart'; // While we have theme, keeping this for specific colors if needed
 import 'package:my_recipe_box/utils/constants/databas_constants.dart';
 import 'package:my_recipe_box/utils/constants/view_constants.dart';
 import 'package:my_recipe_box/widgets/sized_box.dart';
-import 'package:my_recipe_box/widgets/text_widgets/views_text_widgets.dart';
 
 class DetailedRecipeView extends StatefulWidget {
   final Recipe recipe;

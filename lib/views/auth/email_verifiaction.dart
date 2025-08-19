@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:my_recipe_box/services/auth/auth_service.dart';
 import 'package:my_recipe_box/utils/constants/route_constants.dart';
 import 'package:my_recipe_box/widgets/text_widgets/views_text_widgets.dart';
-import 'dart:developer' as dev_tool show log;
 
 class EmailVerificationView extends StatefulWidget {
   const EmailVerificationView({super.key});

@@ -190,7 +190,7 @@ class RecipeService {
 
   Future<List<Recipe>> getUserFavoriteRecipes({required int userId}) async {
     try {
-      final database = await databaseService.database;
+      await databaseService.database;
       final userRecipes = await getUserRecipes(userId: userId);
 
       return userRecipes

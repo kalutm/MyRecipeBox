@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_recipe_box/exceptions/auth/auth_exceptions.dart';
 import 'package:my_recipe_box/services/auth/auth_service.dart';
-import 'package:my_recipe_box/services/auth/auth_user.dart';
 import 'package:my_recipe_box/utils/constants/hint_texts.dart';
 import 'package:my_recipe_box/utils/constants/route_constants.dart';
 import 'package:my_recipe_box/utils/dialogs/error_dialog.dart';
@@ -67,7 +66,7 @@ class _RegisterViewState extends State<RegisterView> {
               ElevatedButton(
                 onPressed: () async {
                   try {
-                    final AuthUser user = await AuthService.fireAuth().register(
+                    await AuthService.fireAuth().register(
                       _emailController.text,
                       _passwordController.text,
                     );

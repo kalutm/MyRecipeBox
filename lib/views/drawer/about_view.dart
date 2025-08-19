@@ -37,7 +37,7 @@ class AboutView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "About My Recipe Box",
+          "About Meal Organizer",
           ),
       ),
       body: SingleChildScrollView(
@@ -53,7 +53,7 @@ class AboutView extends StatelessWidget {
                     Icon(Icons.food_bank, size: 60),
                     SizedBox(height: 10),
                     Text(
-                      "My Recipe Box",
+                      "Meal Organizer",
                     ),
                   ],
                 ),
