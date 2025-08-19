@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:my_recipe_box/models/recipe.dart';
 import 'package:my_recipe_box/services/auth/auth_service.dart';
@@ -14,6 +13,7 @@ import 'package:my_recipe_box/utils/dialogs/delete_dialog.dart';
 import 'package:my_recipe_box/views/meal_planner.dart';
 import 'package:my_recipe_box/views/recipes/create_update_recipe_view.dart';
 import 'package:my_recipe_box/views/recipes/recipe_list.dart';
+import 'package:my_recipe_box/widgets/text_widgets/views_text_widgets.dart';
 import 'package:my_recipe_box/widgets/waiting/spinkit_rotating_circle.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

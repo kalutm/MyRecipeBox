@@ -131,49 +131,4 @@ class FireAuth implements AuthInterface {
     }
   }
 
-  @override
-  Future<bool> startEmailVerificationCheck() async {
-    try {
-      final completer = Completer<bool>();
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        throw UserNotLoggedInAuthException();
-      }
-
-      Timer timeoutTimer = Timer(const Duration(seconds: 60), () {
-        if (!completer.isCompleted) {
-          completer.completeError(
-            TimeoutException("Email verification timed out after 60 seconds"),
-          );
-        }
-      });
-
-      Timer.periodic(const Duration(seconds: 2), (timer) async {
-        try {
-          await user.reload();
-          final currentUser = FirebaseAuth.instance.currentUser;
-          if (currentUser != null && currentUser.emailVerified) {
-            timer.cancel();
-            timeoutTimer.cancel();
-            if (!completer.isCompleted) {
-              completer.complete(true);
-            }
-          }
-        } catch (e, stackTrace) {
-          timer.cancel();
-          timeoutTimer.cancel();
-          if (!completer.isCompleted) {
-            completer.completeError(e, stackTrace);
-          }
-        }
-      });
-
-      return await completer.future;
-    } catch (authError) {
-      if (authError is TimeoutException) {
-        throw EmailVerificationCheckTimeoutException();
-      }
-      throw EmailVerificationCheckAuthException();
-    }
-  }
 }

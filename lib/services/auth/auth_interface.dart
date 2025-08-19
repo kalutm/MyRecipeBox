@@ -7,7 +7,6 @@ abstract class AuthInterface {
   Future<AuthUser> login(String email, String password);
   Future<void> logout();
   Future<AuthUser> register(String email, String password);
-  Future<bool> startEmailVerificationCheck();
   Future<void> sendVerificationEmail();
   Future<void> initializeApp();
 }

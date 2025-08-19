@@ -32,8 +32,5 @@ class AuthService implements AuthInterface {
       someAuth.register(email, password);
   @override
   Future<void> sendVerificationEmail() => someAuth.sendVerificationEmail();
-
-  @override
-  Future<bool> startEmailVerificationCheck() =>
-      someAuth.startEmailVerificationCheck();
+  
 }
