@@ -104,7 +104,7 @@ class AboutView extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(FontAwesomeIcons.icons),
-                title: Text("Icons are from stockio.com"),
+                title: Text("App Icon from: stockio.com"),
                 onTap: () => _launchURL(Uri.parse('https://www.stockio.com/free-icon/knife-and-fork-gradient-filled')),
               )
             ],
