@@ -39,8 +39,18 @@ Planned features:
 
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/b2a5d55e-6263-4054-a7fb-06ab90b81a47" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/4726368b-c860-42c6-a2dd-f8255126a2bf" />
-<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/d79dd5ab-e055-47a4-9733-c625b299b4e9" /> <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/53d680bf-a496-42e8-b80f-be52283adbd8" />
-
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/d79dd5ab-e055-47a4-9733-c625b299b4e9" /> 
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/53d680bf-a496-42e8-b80f-be52283adbd8" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/84139ff4-090a-4c54-a939-55dda20f735b" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/03ededce-5f1b-4271-ab28-8dd0d4abc301" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/37f7d388-fd62-40b3-8a49-5d65e955308b" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/1ab376ef-9b24-459e-97f9-a41ef47a8080" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/3de47e35-5ade-4cca-a7c5-509196a824e2" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/85a55b1e-df5e-4940-be7b-a8de601dd010" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/5c290d82-b6dd-42e3-a140-b4991e7d237a" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/c83f7c00-3853-4673-b772-206b9bb0a19e" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/4ac31e56-94c8-4e24-b12f-15c2052267bb" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/5088b9c2-64dc-495d-8a2d-6061f76f1eef" />
 
 ---
 
