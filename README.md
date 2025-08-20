@@ -37,7 +37,7 @@ Planned features:
 
 ## 📸 Screenshots
 
-> <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/b2a5d55e-6263-4054-a7fb-06ab90b81a47" />
+<img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/b2a5d55e-6263-4054-a7fb-06ab90b81a47" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/4726368b-c860-42c6-a2dd-f8255126a2bf" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/d79dd5ab-e055-47a4-9733-c625b299b4e9" />
 <img width="250" height="500" alt="image" src="https://github.com/user-attachments/assets/53d680bf-a496-42e8-b80f-be52283adbd8" />
