@@ -102,6 +102,11 @@ class AboutView extends StatelessWidget {
                 title: Text("Contact Me Via Telegram"),
                 onTap: () => _launchURL(Uri.parse('https://t.me/kalutm')),
               ),
+              ListTile(
+                leading: Icon(FontAwesomeIcons.icons),
+                title: Text("Icons are from stockio.com"),
+                onTap: () => _launchURL(Uri.parse('https://www.stockio.com/free-icon/knife-and-fork-gradient-filled')),
+              )
             ],
           ),
         ),
